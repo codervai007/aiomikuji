@@ -450,19 +450,13 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 :root[data-theme=dark] .mresult b{font-family:var(--sans)}
 @media print{:root[data-theme=dark] body{background:#fff}}
 
-/* start screen with a background video: card moves to the bottom so the video shows */
+/* start screen with a background video: only the start text, nothing covering the video */
 .idle.hasvid{background:#000}
-.idle.hasvid .idlecard{position:absolute;left:0;right:0;bottom:5vh;margin:0 auto;width:min(92vw,980px);background:rgba(0,0,0,.55)!important;color:#f0f0fa;border-color:rgba(240,240,250,.35)!important;box-shadow:none!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:22px 36px;gap:14px;grid-template-columns:minmax(0,1fr) auto;align-items:center;justify-items:start;text-align:left}
-.idle.hasvid .idlecard h1{font-size:clamp(26px,3.6vh,40px);grid-column:1}
-.idle.hasvid .idlecard h1 br{display:none}
-.idle.hasvid .idlecard .pill{grid-column:1;background:transparent!important;color:#f0f0fa;border-color:rgba(240,240,250,.4)!important}
-.idle.hasvid .startbtn{grid-column:2;grid-row:1/span 3}
-.idle.hasvid .idlemug{grid-column:1;color:#c9c9d3}
+.idle.hasvid .idlecard{position:absolute;left:0;right:0;bottom:7vh;margin:0 auto;width:auto;padding:0;background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none;display:block}
+.idle.hasvid .idlecard>:not(.startbtn){display:none}
+.kiosk .idle.hasvid span.startbtn.btn.primary{background:none!important;border:0!important;box-shadow:none!important;color:#f0f0fa!important;min-height:0;padding:0;text-transform:none;font:700 clamp(32px,5.5vh,64px)/1.2 var(--sans);letter-spacing:.18em;text-shadow:0 2px 18px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.9);animation:breathe 2.2s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.45}}
 .idle.hasvid .is1,.idle.hasvid .is2,.idle.hasvid .is3{display:none}
-@media(max-width:900px){
-  .idle.hasvid .idlecard{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;padding:20px}
-  .idle.hasvid .startbtn{grid-column:1;grid-row:auto}
-  .idle.hasvid .idlecard h1 br{display:inline}
-  .idle.hasvid .idlevid{object-fit:contain;object-position:50% 30%}
-  .startbtn{font-size:22px;padding:0 26px;min-height:64px;white-space:nowrap}
-}
+@media(max-width:900px){.idle.hasvid .idlevid{object-fit:contain;object-position:50% 40%}.kiosk .idle.hasvid span.startbtn.btn.primary{font-size:26px;letter-spacing:.12em}}
+@media(prefers-reduced-motion:reduce){.idle.hasvid .startbtn{animation:none}}
+
