@@ -21,8 +21,8 @@ export default function Page() {
             <h1 className="sr-only">AIおみくじ ブース</h1>
             <p className="lead">同じパソコンで「おみくじ画面」と「裏側モニター」を別々のウィンドウで開くと、自動で連動します。</p>
           </div>
-          <div className="heroart">
-            <OmikujiTube />
+          <div className="herovidwrap">
+            <video className="herovid" src="/media/intro.mp4" poster="/media/intro-poster.jpg" autoPlay muted loop playsInline aria-label="AIからおみくじへ変わる映像" />
           </div>
         </div>
         <div className="launch">

@@ -732,3 +732,11 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .tcback p{margin:0;font-size:16px;color:var(--mute)}
 .tcback .btn{justify-self:start}
 .tc-layer,.tc-glare,.tcshade,.tc-img{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+
+/* ---------- home hero: logo + text left, AI video right ---------- */
+.home .herocard{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)!important;text-align:left!important;justify-items:stretch!important;align-items:center;gap:clamp(20px,3vw,40px)}
+.home .homelogo{margin:0 0 8px}
+.home .herocard .lead{margin-inline:0}
+.herovidwrap{position:relative;border-radius:16px!important;overflow:hidden;border:1px solid rgba(255,255,255,.22);box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 40px rgba(255,120,60,.18)!important;aspect-ratio:16/9;background:#000}
+.herovid{display:block;width:100%;height:100%;object-fit:cover}
+@media(max-width:900px){.home .herocard{grid-template-columns:minmax(0,1fr)!important;text-align:center!important;justify-items:center!important}.home .homelogo{margin:0 auto 8px}.home .herocard .lead{margin-inline:auto}.herovidwrap{width:100%}}
