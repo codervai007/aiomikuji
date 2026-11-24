@@ -563,3 +563,60 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 @media(prefers-reduced-motion:reduce){:root[data-theme=dark] .drawbtn{animation:none}}
 :root[data-theme=dark] .kiosk .kchip.on,:root[data-theme=dark] .kiosk .aitile.on,:root[data-theme=dark] .kiosk .btn.primary,:root[data-theme=dark] .kiosk .dots li[data-on=true],:root[data-theme=dark] main .btn.primary,:root[data-theme=dark] .kiosk .btn.primary:hover{background:var(--grad)!important;color:#111!important;border-color:transparent!important}
 :root[data-theme=dark] .kiosk .btn.primary:disabled{background:rgba(8,8,12,.7)!important;color:var(--mute)!important;border-color:var(--line)!important}
+
+/* ---------- logo ---------- */
+.brand{display:inline-flex;align-items:center;gap:12px}
+.brandword{font:400 26px/1 "Dela Gothic One",var(--sans);letter-spacing:.02em;color:var(--ink)}
+.brandword b{font-weight:400;margin-right:2px}
+:root[data-theme=dark] .brandword{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mtitle{display:flex;align-items:center;gap:18px}
+.herocard .logomark{margin-bottom:14px}
+
+/* ---------- display font: Dela Gothic One for headings, choices, buttons, fortunes ---------- */
+:root[data-theme=dark] :where(.khd h2,.pickside h2,.mhd h1,.sechd h2,.herocard h1,.launchcard h3,.reslabel,.aitile,.picked,.t3d,.luckbox b,.mresult b,.drawbtn){font-family:"Dela Gothic One","BIZ UDPGothic",sans-serif!important;font-weight:400!important;letter-spacing:.03em;text-transform:none}
+:root[data-theme=dark] :where(.kchip,.btn,.dots li){font-family:"BIZ UDPGothic",var(--sans)!important;font-weight:700!important;text-transform:none;letter-spacing:.02em}
+:root[data-theme=dark] .t3d rt{font-family:var(--mono)!important}
+
+/* ---------- centered and a little smaller ---------- */
+.khd{text-align:center}
+.khd h2{font-size:clamp(32px,5vh,54px)}
+.khd p{font-size:clamp(16px,2vh,22px)}
+.kcard{justify-items:center;text-align:center;width:min(100%,1400px);margin-inline:auto}
+.krow{width:100%}
+.krow .q{font-size:clamp(16px,1.25vw,22px);margin-bottom:10px}
+.kchips{justify-content:center;gap:10px}
+.kchip{min-height:clamp(54px,7vh,80px);font-size:clamp(17px,1.35vw,26px);padding:0 clamp(16px,1.4vw,26px)}
+.knav{width:min(100%,1400px);margin-inline:auto}
+.btn.big{min-height:clamp(58px,7vh,80px);font-size:clamp(18px,1.4vw,26px);padding:0 32px}
+.aitiles{width:min(100%,1400px);margin-inline:auto}
+.aitile{justify-content:center;font-size:clamp(22px,3.2vh,36px)}
+.aimark{width:clamp(56px,7vh,80px);height:clamp(56px,7vh,80px);font-size:clamp(26px,3.4vh,38px)}
+.pickpage{justify-content:center}
+.pickcab{flex:0 1 auto}
+.pickside{width:clamp(260px,26vw,380px);text-align:center}
+.pickside h2{font-size:clamp(22px,3.4vh,36px)}
+.picked{min-height:110px;font-size:22px}
+.picked b{font-size:clamp(44px,6.5vh,68px)}
+.drawbtn{min-height:clamp(80px,10vh,110px);font-size:clamp(30px,4.2vh,46px)!important}
+.dots li{font-size:16px;padding:5px 16px}
+.counter{font-size:16px}
+.counter b{font-size:26px}
+.resside{text-align:center;justify-items:center}
+.resbtns{justify-content:center}
+.resluck{font-size:clamp(72px,13vh,140px)}
+.reswin b{font-size:clamp(28px,4.2vh,40px)}
+.resmsg,.resprint{font-size:clamp(17px,2.2vh,24px)}
+:root[data-theme=dark] .dots li,:root[data-theme=dark] .counter span,:root[data-theme=dark] .counter small{font-size:15px}
+
+/* short screens (laptops): keep every question on one screen */
+@media(max-height:820px){
+  .kpage{gap:10px;padding-block:12px}
+  .khd h2{font-size:clamp(26px,4.4vh,40px)}
+  .khd p{font-size:15px;margin-top:2px}
+  .kcard{padding:16px 20px;gap:6px;align-content:center!important}
+  .krow .q{margin-bottom:6px;font-size:15px}
+  .kchips{gap:8px}
+  .kchip{min-height:46px;font-size:17px;padding:0 16px}
+  .btn.big{min-height:52px;font-size:18px}
+  .kbar{padding-block:10px}
+}

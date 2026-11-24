@@ -1,4 +1,5 @@
 import { OmikujiTube, Sparkle } from "@/components/Art";
+import { LogoMark } from "@/components/Logo";
 
 const SCREENS = [
   { href: "/omikuji", c: "c1", n: "一", t: "おみくじ画面", d: "来場者がさわるタッチパネルの画面。全画面・横向きで使います。" },
@@ -14,6 +15,7 @@ export default function Page() {
           <Sparkle className="sp1" color="#e9525c" />
           <Sparkle className="sp2" color="#86efac" />
           <div>
+            <LogoMark size={96} />
             <h1>
               AIおみくじ
               <br />
