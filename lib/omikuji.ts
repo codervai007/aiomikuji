@@ -19,7 +19,7 @@ export const AGES = ["10代", "20代", "30代", "40代", "50代", "60代以上"]
 export const AI_USE = ["毎日使っている", "ときどき使う", "試したことがある", "使ったことがない"] as const;
 export const AI_USE_COLS = [...AI_USE, "未回答"] as const;
 
-export const DEFAULT_DEPTS = ["総務", "人事", "経理・財務", "営業", "工事・現場", "設計", "購買・調達", "IT統括部", "その他"];
+export const DEFAULT_DEPTS = ["総務", "人事", "経理・財務", "営業", "工場", "工事・現場", "設計", "購買・調達", "IT統括部", "その他"];
 
 export const TIPS = [
   "個人情報・社外秘は入力しない",
@@ -40,7 +40,10 @@ export const TIPS = [
 ];
 
 export const KEYS = ["仕事運", "健康運", "ひとこと"] as const;
-export type FortuneText = Partial<Record<(typeof KEYS)[number], string>>;
+/** Extra line when the visitor gave a department: another department that suits them. */
+export const MATCH_KEY = "適職運";
+export type LineKey = (typeof KEYS)[number] | typeof MATCH_KEY;
+export type FortuneText = Partial<Record<LineKey, string>>;
 
 const NG_WORDS = ["死", "病", "不幸", "事故", "最悪", "災", "呪", "失敗する"];
 
@@ -78,26 +81,39 @@ export function cleanField(v: unknown, max = 20): string {
     .slice(0, max);
 }
 
-export type PromptInput = { fortune: string; age: string; gender: string; dept: string };
+export type PromptInput = { fortune: string; age: string; gender: string; dept: string; match?: string };
 
-export function buildPrompt({ fortune, age, gender, dept }: PromptInput): string {
-  return `あなたはおみくじ作家です。
-運勢：${fortune}　対象：${age || "年齢未回答"}・${gender}　部署：${dept || "未回答"}
-仕事運・健康運・ひとことを、各30字以内で前向きな言葉で書いてください。${dept ? "\n仕事運は、その部署の仕事に合う内容にしてください。" : ""}
-性別や年齢による決めつけはせず、医療的な助言はしないでください。
-出力は次の3行だけにしてください。
-仕事運：
-健康運：
-ひとこと：`;
+/** Picks, at random, another department from the list that "also suits" the visitor. */
+export function pickMatch(depts: string[], dept: string): string {
+  const pool = depts.filter((d) => d !== dept && d !== "その他" && d !== "回答しない");
+  return dept && pool.length ? pool[Math.floor(rnd() * pool.length)] : "";
 }
 
-export function templateText(): string {
-  return KEYS.map((k) => `${k}：${TEMPLATES[k][Math.floor(rnd() * TEMPLATES[k].length)]}`).join("\n");
+export function buildPrompt({ fortune, age, gender, dept, match }: PromptInput): string {
+  const withMatch = Boolean(dept && match);
+  return `あなたはおみくじ作家です。
+運勢：${fortune}　対象：${age || "年齢未回答"}・${gender}　部署：${dept || "未回答"}${withMatch ? `　相性のいい部署：${match}` : ""}
+仕事運・健康運・ひとことを、各30字以内で前向きな言葉で書いてください。${dept ? "\n仕事運は、その部署の仕事に合う内容にしてください。" : ""}${
+    withMatch ? `\n適職運は「${dept}のあなたは、${match}にも向いています」という内容を、前向きな理由を添えて40字以内で書いてください。「${match}」を必ず入れてください。` : ""
+  }
+性別や年齢による決めつけはせず、医療的な助言はしないでください。
+出力は次の${withMatch ? 4 : 3}行だけにしてください。
+仕事運：
+健康運：
+ひとこと：${withMatch ? "\n適職運：" : ""}`;
+}
+
+const MATCH_TEMPLATES = ["の経験が、{m}でも活きそう。", "で鍛えた力は、{m}でも光ります。", "のあなたは、{m}にも向いています。"];
+
+export function templateText(dept = "", match = ""): string {
+  const lines = KEYS.map((k) => `${k}：${TEMPLATES[k][Math.floor(rnd() * TEMPLATES[k].length)]}`);
+  if (dept && match) lines.push(`${MATCH_KEY}：${dept}${MATCH_TEMPLATES[Math.floor(rnd() * MATCH_TEMPLATES.length)].replace("{m}", match)}`);
+  return lines.join("\n");
 }
 
 export function parseFortune(t: string): FortuneText {
   const o: FortuneText = {};
-  for (const k of KEYS) {
+  for (const k of [...KEYS, MATCH_KEY] as LineKey[]) {
     const m = t.match(new RegExp("^\\s*" + k + "\\s*[:：]\\s*(.+)$", "m"));
     if (m) o[k] = m[1].trim();
   }
@@ -105,11 +121,17 @@ export function parseFortune(t: string): FortuneText {
 }
 
 /** Returns an empty string when the text is OK to print, otherwise the reason it isn't. */
-export function checkFortune(o: FortuneText): string {
+export function checkFortune(o: FortuneText, match = ""): string {
   if (KEYS.some((k) => !o[k])) return "3項目がそろっていません";
   const long = KEYS.find((k) => [...(o[k] ?? "")].length > 30);
   if (long) return `${long}が30字を超えています`;
-  const all = KEYS.map((k) => o[k]).join("");
+  if (match) {
+    const m = o[MATCH_KEY] ?? "";
+    if (!m) return "適職運がありません";
+    if (!m.includes(match)) return `適職運に「${match}」が入っていません`;
+    if ([...m].length > 45) return "適職運が長すぎます";
+  }
+  const all = ([...KEYS, MATCH_KEY] as LineKey[]).map((k) => o[k] ?? "").join("");
   const bad = NG_WORDS.find((w) => all.includes(w));
   if (bad) return `不適切な表現「${bad}」を検出`;
   return "";

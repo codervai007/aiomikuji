@@ -31,6 +31,7 @@ export async function POST(req: Request) {
   const gender = cleanField(body.gender, 6);
   const age = cleanField(body.age, 6);
   const dept = cleanField(body.dept, 20);
+  const match = dept ? cleanField(body.match, 20) : "";
   if (!FORTUNE_NAMES.includes(fortune) || !(GENDERS as readonly string[]).includes(gender) || (age && !(AGES as readonly string[]).includes(age))) {
     return Response.json({ error: "bad_request" }, { status: 400 });
   }
@@ -38,8 +39,8 @@ export async function POST(req: Request) {
   const client = new Anthropic({ apiKey });
   const stream = client.messages.stream({
     model: MODEL,
-    max_tokens: 300,
-    messages: [{ role: "user", content: buildPrompt({ fortune, age, gender, dept }) }],
+    max_tokens: 400,
+    messages: [{ role: "user", content: buildPrompt({ fortune, age, gender, dept, match }) }],
   });
 
   const encoder = new TextEncoder();

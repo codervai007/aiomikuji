@@ -10,6 +10,7 @@ import {
   drawFortune,
   kan,
   parseFortune,
+  pickMatch,
   rnd,
   templateText,
 } from "@/lib/omikuji";
@@ -139,11 +140,12 @@ export function KioskApp() {
     setSlip(null);
     setScreen("reveal");
 
-    const input = { fortune, age, gender, dept };
+    const match = pickMatch(st.depts, dept);
+    const input = { fortune, age, gender, dept, match };
     const prompt = buildPrompt(input);
     pushMon({ phase: "drawing", steps: IDLE_STEPS, prompt: "", answer: "", checks: "", fortune, win, no });
     setStep(0, "done", `第${kan(no)}番 ・ ${dept || "部署未回答"}`);
-    setStep(1, "done", `${fortune}${win ? " ・ 当たり" : ""}`);
+    setStep(1, "done", `${fortune}${win ? " ・ 当たり" : ""}${match ? ` ・ 適職：${match}` : ""}`);
     pushMon({ prompt });
     setStep(2, "done", "差し込み完了");
     setStep(3, "run", "書いています…");
@@ -151,20 +153,20 @@ export function KioskApp() {
     let text = aiReady ? await generate(input, (t) => pushMon({ answer: t })) : "";
     let source = "生成AI";
     if (!text.trim()) {
-      text = templateText();
+      text = templateText(dept, match);
       source = "用意した文章";
     }
     pushMon({ answer: text });
     setStep(3, "done", source);
 
     let parsed = parseFortune(text);
-    const err = checkFortune(parsed);
+    const err = checkFortune(parsed, match);
     if (err) {
-      parsed = parseFortune(templateText());
+      parsed = parseFortune(templateText(dept, match));
       pushMon({ checks: `確認NG（${err}）→ 安全な文章に差し替えて印刷` });
       setStep(4, "warn", "差し替え");
     } else {
-      pushMon({ checks: "確認OK：3項目そろい・各30字以内・不適切な表現なし" });
+      pushMon({ checks: "確認OK：全項目そろい・文字数OK・不適切な表現なし" });
       setStep(4, "done", "印刷");
     }
     pushMon({ phase: "done" });

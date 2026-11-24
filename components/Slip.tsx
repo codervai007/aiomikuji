@@ -1,18 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { FORTUNE_INFO, KEYS, kan, type FortuneText } from "@/lib/omikuji";
+import { FORTUNE_INFO, KEYS, MATCH_KEY, kan, type FortuneText, type LineKey } from "@/lib/omikuji";
 import { FortuneArt } from "./FortuneArt";
 
 export type SlipData = { fortune: string; text: FortuneText; prompt: string; win: boolean; no: number; tips: string[] };
 
 export const GUIDE_URL = process.env.NEXT_PUBLIC_GUIDE_URL || "";
 
-const ITEM_STYLE: Record<(typeof KEYS)[number], { icon: string; color: string }> = {
+const ITEM_STYLE: Record<LineKey, { icon: string; color: string }> = {
   仕事運: { icon: "仕", color: "#1d86cf" },
   健康運: { icon: "健", color: "#0bbf5c" },
   ひとこと: { icon: "言", color: "#f08a1c" },
+  適職運: { icon: "適", color: "#7b4fd6" },
 };
+
+/** The lines to show: the three base lines, plus 適職運 when present. */
+const linesOf = (t: FortuneText): LineKey[] => (t[MATCH_KEY] ? [...KEYS, MATCH_KEY] : [...KEYS]);
 
 /** QR code for the AI guide page (only when NEXT_PUBLIC_GUIDE_URL is set). */
 export function useGuideQr() {
@@ -54,7 +58,7 @@ export function SlipFront({ data }: { data: SlipData }) {
         </div>
       </div>
       <ul className="items">
-        {KEYS.map((k) => (
+        {linesOf(data.text).map((k) => (
           <li key={k}>
             <span className="ic" style={{ background: ITEM_STYLE[k].color }}>
               {ITEM_STYLE[k].icon}
@@ -127,7 +131,7 @@ export function PrintSlip({ data, qr }: { data: SlipData | null; qr: string }) {
       <p className="p-title">AIおみくじ　第{kan(data.no)}番</p>
       <p className="p-read">{FORTUNE_INFO[data.fortune]?.reading}</p>
       <p className="p-luck">{data.fortune}</p>
-      {KEYS.map((k) => (
+      {linesOf(data.text).map((k) => (
         <p key={k} className="p-item">
           <b>【{k}】</b>
           {data.text[k]}
