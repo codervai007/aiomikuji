@@ -1,9 +1,26 @@
 "use client";
 import { KEYS, kan, type FortuneText } from "@/lib/omikuji";
+import { Sparkle } from "./Art";
 
 export type SlipData = { fortune: string; text: FortuneText; prompt: string; win: boolean; no: number; tips: string[] };
 
-/** The printed slip: front (vertical omikuji) and back (prompt + AI tips). */
+/** Background colour of the fortune box, from luckiest to least. */
+const FORTUNE_COLOR: Record<string, string> = {
+  大大吉: "#f5cb32",
+  大吉: "#f6c68b",
+  中吉: "#86efac",
+  吉: "#c4e0f2",
+  小吉: "#fbcfe8",
+  末吉: "#ddd6fe",
+};
+
+const ITEM_STYLE: Record<(typeof KEYS)[number], { icon: string; color: string }> = {
+  仕事運: { icon: "仕", color: "#1d86cf" },
+  健康運: { icon: "健", color: "#0bbf5c" },
+  ひとこと: { icon: "言", color: "#f08a1c" },
+};
+
+/** The printed slip: front (fortune) and back (prompt + AI tips). */
 export function Slip({
   data,
   side,
@@ -26,51 +43,79 @@ export function Slip({
         </button>
       </div>
 
-      {!data || printing ? (
-        <div className="slip">
-          <div className="frame empty">{printing ? "印刷中…" : "引き出しを選んで、おみくじを引いてください"}</div>
-        </div>
-      ) : side === "front" ? (
-        <article className="slip" aria-label="おみくじ 表面">
-          <div className="frame">
-            <p className="t">AIおみくじ</p>
-            <p className="no">第{kan(data.no)}番</p>
-            <p className="luck">{data.fortune}</p>
-            {KEYS.map((k) => (
-              <p className="it" key={k}>
-                <b>{k}</b>　{data.text[k]}
-              </p>
-            ))}
-            {data.win && (
-              <p className="it" style={{ color: "#c8372d" }}>
-                <b>当たり</b>　この紙をスタッフにお見せください
-              </p>
-            )}
-          </div>
-          {data.win && (
-            <div className="seal" aria-label="当たり">
-              当選<small>マグカップ贈呈</small>
+      <div className="slipwrap">
+        <Sparkle className="sp4" color="#e9525c" />
+        <Sparkle className="sp5" color="#86efac" />
+
+        {!data || printing ? (
+          <div className="slip empty">
+            <div className="ph">
+              <span className="phnum">{printing ? "…" : "?"}</span>
+              <p>{printing ? "AIがおみくじを書いています…" : "引き出しを選んで、おみくじを引いてください"}</p>
             </div>
-          )}
-        </article>
-      ) : (
-        <article className="slip back" aria-label="おみくじ 裏面">
-          <h3>あなたのおみくじを作った指示文</h3>
-          <pre>{data.prompt}</pre>
-          <h3>AIを仕事で使うコツ</h3>
-          <ol>
-            {data.tips.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
-          </ol>
-          <p className="foot">
-            相談窓口　IT統括部 アプリケーションサポート
-            <br />
-            業務でAIを試したいときは気軽にご相談ください
-          </p>
-        </article>
-      )}
-      <p className="slipnote">当日はブースのサーマルプリンターで印刷してお渡しします</p>
+          </div>
+        ) : side === "front" ? (
+          <article className={data.win ? "slip win" : "slip"} aria-label="おみくじ 表面">
+            <div className="sliphd">
+              <span className="tag">AIおみくじ</span>
+              <span className="tag">第{kan(data.no)}番</span>
+            </div>
+
+            <div className="luckbox" style={{ background: FORTUNE_COLOR[data.fortune] ?? "#fef3dc" }}>
+              <span>運勢</span>
+              <b>{data.fortune}</b>
+            </div>
+
+            <ul className="items">
+              {KEYS.map((k) => (
+                <li key={k}>
+                  <span className="ic" style={{ background: ITEM_STYLE[k].color }}>
+                    {ITEM_STYLE[k].icon}
+                  </span>
+                  <div>
+                    <span className="lbl">{k}</span>
+                    <p>{data.text[k]}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {data.win && (
+              <>
+                <div className="winbadge" aria-hidden="true">
+                  当たり！
+                </div>
+                <p className="wincall">
+                  <b>マグカップ当選</b>この紙をスタッフにお見せください
+                </p>
+              </>
+            )}
+
+            <p className="slipft">IT Connect Fes 2026 ・ IT統括部</p>
+          </article>
+        ) : (
+          <article className="slip back" aria-label="おみくじ 裏面">
+            <div className="sliphd">
+              <span className="tag">裏面</span>
+              <span className="tag">AIミニ解説</span>
+            </div>
+            <h4>あなたのおみくじを作った指示文</h4>
+            <pre>{data.prompt}</pre>
+            <h4>AIを仕事で使うコツ</h4>
+            <ul className="tiplist">
+              {data.tips.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+            <p className="contact">
+              <b>相談窓口</b>IT統括部 アプリケーションサポート
+              <br />
+              業務でAIを試したいときは気軽にご相談ください
+            </p>
+          </article>
+        )}
+      </div>
+      <p className="slipnote">当日はブースのプリンターで印刷してお渡しします</p>
     </section>
   );
 }
