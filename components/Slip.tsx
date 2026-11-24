@@ -15,6 +15,16 @@ const FORTUNE_COLOR: Record<string, string> = {
   末吉: "#ddd6fe",
 };
 
+/** Furigana for each fortune. */
+const READING: Record<string, string> = {
+  大大吉: "だいだいきち",
+  大吉: "だいきち",
+  中吉: "ちゅうきち",
+  吉: "きち",
+  小吉: "しょうきち",
+  末吉: "すえきち",
+};
+
 const ITEM_STYLE: Record<(typeof KEYS)[number], { icon: string; color: string }> = {
   仕事運: { icon: "仕", color: "#1d86cf" },
   健康運: { icon: "健", color: "#0bbf5c" },
@@ -66,7 +76,14 @@ export function Slip({
               <FortuneArt fortune={data.fortune} className="art" />
               <div className="lt">
                 <span>運勢</span>
-                <b className={data.fortune.length > 2 ? "long" : undefined}>{data.fortune}</b>
+                <b className={data.fortune.length > 2 ? "long" : undefined}>
+                  <ruby>
+                    {data.fortune}
+                    <rp>（</rp>
+                    <rt>{READING[data.fortune]}</rt>
+                    <rp>）</rp>
+                  </ruby>
+                </b>
               </div>
             </div>
 

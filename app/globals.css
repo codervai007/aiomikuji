@@ -117,9 +117,12 @@ select{appearance:none;padding-right:42px;min-width:170px;cursor:pointer;backgro
 .luckbox{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:10px;border:var(--b);border-radius:12px;box-shadow:var(--sh);padding:12px;margin-bottom:22px}
 .luckbox .art{width:96px;height:96px;background:#fff;border:var(--b);border-radius:10px;padding:4px}
 .luckbox .lt{display:grid;justify-items:center}
-.luckbox span{font-size:13px;font-weight:800;border:2px solid var(--ink);border-radius:999px;background:#fff;padding:0 12px}
+.luckbox .lt>span{font-size:13px;font-weight:800;border:2px solid var(--ink);border-radius:999px;background:#fff;padding:0 12px}
 .luckbox b{font:800 60px/1.1 var(--mincho);letter-spacing:.02em;margin-top:4px;white-space:nowrap}
 .luckbox b.long{font-size:46px}
+.luckbox ruby{ruby-position:over;ruby-align:space-around}
+.luckbox rt{font:800 13px/1.2 var(--sans);letter-spacing:.08em;color:var(--ink);padding-bottom:2px}
+.luckbox b.long rt{font-size:12px}
 .items{list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .items li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:start;padding-bottom:12px;border-bottom:2px dashed #d1d5db}
 .items li:last-child{border-bottom:0;padding-bottom:0}
