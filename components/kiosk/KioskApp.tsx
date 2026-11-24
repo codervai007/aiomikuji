@@ -20,7 +20,7 @@ import { aiAvailable, generate } from "@/lib/generate";
 import { setSoundEnabled, sfx, unlockAudio } from "@/lib/sound";
 import { OmikujiTube, Sparkle } from "../Art";
 import { BgVideo } from "../BgVideo";
-import { Logo } from "../Logo";
+import { LogoImage } from "../Logo";
 import { Cabinet } from "../Cabinet";
 import { Reveal } from "../Reveal";
 import { FortuneName, PrintSlip, SlipBack, SlipFront, useGuideQr, type SlipData } from "../Slip";
@@ -206,7 +206,7 @@ export function KioskApp() {
       {screen !== "idle" && screen !== "reveal" && <BgVideo />}
       {screen !== "idle" && screen !== "reveal" && (
         <header className="kbar">
-          <Logo size={44} />
+          <LogoImage height={64} />
           <ol className="dots" aria-label="すすみ具合">
             {PROGRESS.map((p, i) => (
               <li key={p} data-on={i <= stepIdx}>

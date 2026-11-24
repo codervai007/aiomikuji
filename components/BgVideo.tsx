@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 
-/** Dimmed looping background video. Uses /media/bg.mp4, or the start video if there is none. */
-const SOURCES = ["/media/bg.mp4", "/media/idle.mp4"];
+/** Dimmed looping background video. Uses /media/bg.mp4, else the home background, else the start loop. */
+const SOURCES = ["/media/bg.mp4", "/media/home-bg.mp4", "/media/idle.mp4"];
 
 export function BgVideo() {
   const [i, setI] = useState(0);

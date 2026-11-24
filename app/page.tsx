@@ -1,5 +1,5 @@
 import { OmikujiTube, Sparkle } from "@/components/Art";
-import { LogoMark } from "@/components/Logo";
+import { LogoImage } from "@/components/Logo";
 
 const SCREENS = [
   { href: "/omikuji", c: "c1", n: "一", t: "おみくじ画面", d: "来場者がさわるタッチパネルの画面。全画面・横向きで使います。" },
@@ -9,18 +9,15 @@ const SCREENS = [
 
 export default function Page() {
   return (
-    <main className="band">
+    <main className="band home">
+      <video className="homebg" src="/media/home-bg.mp4" poster="/media/home-bg-poster.jpg" autoPlay muted loop playsInline aria-hidden="true" />
       <div className="wrap">
         <div className="herocard">
           <Sparkle className="sp1" color="#e9525c" />
           <Sparkle className="sp2" color="#86efac" />
           <div>
-            <LogoMark size={96} />
-            <h1>
-              AIおみくじ
-              <br />
-              <em>ブース</em>
-            </h1>
+            <LogoImage height={200} className="homelogo" />
+            <h1 className="sr-only">AIおみくじ ブース</h1>
             <p className="lead">同じパソコンで「おみくじ画面」と「裏側モニター」を別々のウィンドウで開くと、自動で連動します。</p>
           </div>
           <div className="heroart">

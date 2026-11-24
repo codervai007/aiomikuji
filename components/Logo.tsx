@@ -35,3 +35,9 @@ export function Logo({ size = 40 }: { size?: number }) {
     </span>
   );
 }
+
+/** The artwork logo (glowing omikuji box + AIおみくじ). Black background blends away on dark screens. */
+export function LogoImage({ height = 56, className = "" }: { height?: number; className?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src="/media/logo.png" alt="AIおみくじ" height={height} style={{ height, width: "auto" }} className={`logoimg ${className}`} />;
+}

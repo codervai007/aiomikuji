@@ -5,7 +5,7 @@ import { FORTUNE_INFO } from "@/lib/omikuji";
 import { useSettings } from "@/lib/useSettings";
 import { Sparkle } from "../Art";
 import { BgVideo } from "../BgVideo";
-import { LogoMark } from "../Logo";
+import { LogoImage } from "../Logo";
 import { FortuneArt } from "../FortuneArt";
 
 const STEPS = [
@@ -38,8 +38,8 @@ export function MonitorApp() {
         <div>
           <p className="pill">IT Connect Fes 2026 ・ IT統括部 アプリケーションサポート</p>
           <h1 className="mtitle">
-            <LogoMark size={72} />
-            AIおみくじ <span>裏側モニター</span>
+            <LogoImage height={110} />
+            <span>裏側モニター</span>
           </h1>
         </div>
         <div className="mstats">
