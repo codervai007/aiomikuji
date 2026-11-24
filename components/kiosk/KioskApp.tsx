@@ -84,7 +84,7 @@ export function KioskApp() {
   }, [screen]);
   useEffect(() => {
     if (screen !== "idle") return;
-    const t = setTimeout(() => setIdlePhase(idlePhase === "intro" ? "loop" : "intro"), idlePhase === "intro" ? 15000 : 45000);
+    const t = setTimeout(() => setIdlePhase(idlePhase === "intro" ? "loop" : "intro"), idlePhase === "intro" ? 12000 : 45000);
     return () => clearTimeout(t);
   }, [screen, idlePhase]);
 
@@ -230,6 +230,8 @@ export function KioskApp() {
                 key="intro"
                 className="idlevid"
                 src="/media/intro.mp4"
+                poster="/media/intro-poster.jpg"
+                preload="auto"
                 autoPlay
                 muted
                 playsInline
@@ -242,6 +244,7 @@ export function KioskApp() {
                 key="loop"
                 className="idlevid"
                 src="/media/idle.mp4"
+                poster="/media/idle-poster.jpg"
                 autoPlay
                 muted
                 loop

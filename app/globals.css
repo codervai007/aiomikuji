@@ -625,3 +625,6 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .kiosk .idle.hasvid span.startbtn.btn.primary.show{animation:startin .9s ease-out forwards,breathe 2.2s .9s ease-in-out infinite}
 @keyframes startin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.kiosk .idle.hasvid span.startbtn.btn.primary.show{animation:none;opacity:1}}
+
+/* show a still right away while the start video loads */
+.idle.hasvid{background:#000 url("/media/intro-poster.jpg") center/cover no-repeat}
