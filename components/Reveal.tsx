@@ -1,4 +1,5 @@
 "use client";
+import { useLang } from "@/lib/useLang";
 import { useEffect, useRef, useState } from "react";
 import { FORTUNE_INFO, rnd } from "@/lib/omikuji";
 import { sfx } from "@/lib/sound";
@@ -59,6 +60,7 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
     };
   }, [stage, revealVideo]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const { t } = useLang();
   const play = () => {
     const v = vid.current;
     if (!v || !v.paused) return;
@@ -70,7 +72,7 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
 
   const skip = (
     <button className="skip" onClick={finish}>
-      スキップ
+      {t("スキップ")}
     </button>
   );
   const flashEl = flash && <div className="wflash" aria-hidden="true" />;
@@ -90,7 +92,7 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
       <div className="reveal video">
         <video key="bg" className="bgvid" src={src} autoPlay muted playsInline aria-hidden="true" />
         <video key="reveal" ref={vid} className="fgvid" src={src} playsInline onCanPlay={play} onEnded={finish} onError={() => setRevealVideo(false)} />
-        {win && <p className="vwin">マグカップ当選！</p>}
+        {win && <p className="vwin">{t("マグカップ当選！")}</p>}
         {skip}
         {flashEl}
       </div>
@@ -108,7 +110,7 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
           <div className={`t3d ${info?.slug}`}>
             <FortuneName fortune={fortune} />
           </div>
-          {win && <p className="rwin">マグカップ当選！</p>}
+          {win && <p className="rwin">{t("マグカップ当選！")}</p>}
         </div>
       )}
       {flashEl}

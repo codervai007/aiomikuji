@@ -802,3 +802,58 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 #boot .boot-word span:nth-child(-n+2){background:linear-gradient(180deg,#ffffff 0%,#ffe08a 45%,#ffb02e 100%);-webkit-background-clip:text;background-clip:text}
 @keyframes boot-letter{0%,60%,100%{transform:translateY(0) scale(1)}20%{transform:translateY(-.28em) scale(1.08) rotate(-4deg)}40%{transform:translateY(.04em) scale(.98) rotate(2deg)}}
 @media(prefers-reduced-motion:reduce){#boot .boot-word span{animation:none}}
+
+/* ---------- language toggle ---------- */
+.langtoggle{display:inline-flex;flex:none;padding:4px;gap:2px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(10,10,12,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.langtoggle button{border:0;background:transparent;color:rgba(255,255,255,.7);font:700 15px/1 "M PLUS 1",system-ui,sans-serif!important;padding:9px 16px;border-radius:999px;cursor:pointer;letter-spacing:.02em}
+.langtoggle button.on{background:linear-gradient(135deg,#ffd76a,#ff7a45 55%,#e0306a);color:#1a0a00}
+.langtoggle.idlelang{position:fixed;top:22px;right:24px;z-index:40}
+@media print{.langtoggle{display:none}}
+.kbar .langtoggle{margin-left:auto}
+.kbar .dots + .langtoggle{margin-left:0}
+.luckbox .lucken{display:block;margin-top:2px;font:700 13px/1.2 "M PLUS 1",sans-serif!important;letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+.resen{margin:-6px 0 6px;font:800 clamp(20px,3vh,30px)/1.2 "M PLUS 1",sans-serif!important;letter-spacing:.08em;text-transform:uppercase;color:#ffd9a0}
+.nb{display:inline-block}
+.kiosk[lang=en] .aitile,.kiosk[lang=en] .kchip{word-break:normal}
+
+/* ---------- phones: everything reachable, 引く！ always on screen ---------- */
+@media(max-width:900px){
+  .kiosk{height:100dvh}
+  .kiosk .kpage{overflow-y:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start!important}
+  .kiosk .kbar{gap:10px;flex-wrap:wrap;padding:8px 12px}
+  .kiosk .kbar .logoimg{height:40px!important;width:auto}
+  .kiosk .kbar .dots{display:none}
+  .kiosk .kbar .langtoggle{margin-left:auto}
+  .kiosk .kbar .langtoggle button{padding:7px 11px;font-size:13px!important}
+  .kiosk .pickpage{align-items:stretch!important;gap:10px!important;padding:10px 10px 0!important}
+  .kiosk .pickcab{height:auto!important;flex:none!important;width:100%}
+  .kiosk .pickcab .shrine{width:100%!important}
+  .kiosk .pickside{position:sticky;bottom:0;z-index:5;width:auto!important;margin:0 -10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+    display:grid!important;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);align-items:center;gap:8px 10px!important;
+    background:rgba(8,8,10,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.16)}
+  .kiosk .pickside h2{grid-column:1/-1;font-size:18px!important;line-height:1.3;text-align:center}
+  .kiosk .pickside .picked{grid-column:1;padding:6px 12px!important;min-height:0!important;font-size:15px!important;white-space:nowrap}
+  .kiosk .pickside .picked b{font-size:26px!important}
+  .kiosk .pickside .picked .none{font-size:12px!important;white-space:normal;display:block;max-width:5.5em}
+  .kiosk .pickside .btn.big{min-height:54px!important;font-size:16px!important;padding:0 10px!important}
+  .kiosk .pickside .drawbtn{min-height:54px!important;font-size:22px!important}
+  .kiosk .pickside .linkbtn{grid-column:1/-1;justify-self:center;padding:2px;font-size:14px}
+  .langtoggle.idlelang{top:12px;right:12px}
+  .langtoggle.idlelang button{padding:7px 12px;font-size:13px!important}
+  .soundbtn{right:50%;transform:translateX(50%);bottom:calc(18px + env(safe-area-inset-bottom));font-size:16px;padding:12px 18px}
+}
+/* the kiosk layering rule (.kiosk>*{position:relative}) must not pin these to the page flow */
+.kiosk>.soundbtn,.kiosk>.langtoggle.idlelang{position:fixed;z-index:40}
+.kiosk>.langtoggle.idlelang{left:auto;bottom:auto}
+.kiosk>.soundbtn{left:auto;top:auto}
+@media(max-width:900px){
+  /* centred content that overflows can't be scrolled to; start from the top on phones */
+  .kiosk .kcard{align-content:start!important;flex:none!important;overflow:visible!important}
+  .kiosk .knav{position:sticky;bottom:0;z-index:5;margin:0 -16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(8,8,10,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  .kiosk .aitiles{flex:none!important}
+}
+@media(max-width:900px){
+  .kiosk .resultpage{align-items:center!important;gap:18px!important;padding-bottom:24px!important}
+  .kiosk .resslip{width:min(100%,440px)!important;flex:none!important;padding:16px!important}
+  .kiosk .resside{width:100%}
+}

@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { kan } from "@/lib/omikuji";
+import { useLang } from "@/lib/useLang";
 
 const NUMS = Array.from({ length: 100 }, (_, i) => i + 1);
 
 /** The shrine cabinet: roof, 御神籤 plate and 100 drawers. */
 export function Cabinet({ pick, onPick, pullTick }: { pick: number | null; onPick: (n: number) => void; pullTick: number }) {
+  const { lang } = useLang();
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Replay the "pull out" animation on the picked drawer each time a draw starts.
@@ -26,7 +28,7 @@ export function Cabinet({ pick, onPick, pullTick }: { pick: number | null; onPic
       </svg>
       <div className="body">
         <div className="plate">御神籤</div>
-        <div className="cab" role="group" aria-label="引き出し 1〜100">
+        <div className="cab" role="group" aria-label={lang === "en" ? "Drawers 1–100" : "引き出し 1〜100"}>
           {NUMS.map((n) => (
             <button
               key={n}
@@ -36,10 +38,10 @@ export function Cabinet({ pick, onPick, pullTick }: { pick: number | null; onPic
               type="button"
               className="dr"
               aria-pressed={pick === n}
-              aria-label={`${n}番`}
+              aria-label={lang === "en" ? `No. ${n}` : `${n}番`}
               onClick={() => onPick(n)}
             >
-              <span className="k">{kan(n)}</span>
+              <span className="k">{lang === "en" ? n : kan(n)}</span>
               <span className="a">{n}</span>
               <i />
             </button>

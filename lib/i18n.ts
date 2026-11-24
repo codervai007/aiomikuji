@@ -1,0 +1,118 @@
+// English text for the visitor screens and the slip. Values the visitor picks stay in
+// Japanese internally (survey CSV, monitor); only what is shown is translated.
+
+export type Lang = "ja" | "en";
+
+const EN: Record<string, string> = {
+  // progress / header
+  あなた: "You",
+  AI: "AI",
+  引き出し: "Drawer",
+  結果: "Result",
+  すすみ具合: "Progress",
+  当たり残り: "Prizes left",
+  タッチしてスタート: "Touch to start",
+  "IT Connect Fes 2026 ・ IT統括部": "IT Connect Fes 2026 ・ IT Division",
+  音を出す: "Sound on",
+  // about you
+  あなたについて: "About you",
+  "わかる範囲でOKです。名前は入力しません。": "Answer only what you like. We never ask your name.",
+  性別: "Gender",
+  "年齢（任意）": "Age (optional)",
+  部署: "Department",
+  女性: "Female",
+  男性: "Male",
+  その他: "Other",
+  回答しない: "Prefer not to say",
+  答えない: "Prefer not to say",
+  "10代": "Teens",
+  "20代": "20s",
+  "30代": "30s",
+  "40代": "40s",
+  "50代": "50s",
+  "60代以上": "60+",
+  総務: "General Affairs",
+  人事: "HR",
+  "経理・財務": "Accounting & Finance",
+  営業: "Sales",
+  工場: "Factory",
+  "工事・現場": "Construction & Sites",
+  設計: "Design & Engineering",
+  "購買・調達": "Purchasing",
+  IT統括部: "IT Division",
+  "← もどる": "← Back",
+  "次へ →": "Next →",
+  // AI use
+  "お仕事でAIを使っていますか？": "Do you use AI at work?",
+  "タップすると次へすすみます。": "Tap an answer to continue.",
+  毎日使っている: "Every day",
+  ときどき使う: "Sometimes",
+  試したことがある: "I've tried it",
+  使ったことがない: "Never",
+  "答えずに次へ →": "Skip →",
+  // drawers
+  引き出しをひとつ選んでください: "Choose one drawer",
+  まだ選んでいません: "Not chosen yet",
+  おまかせで選ぶ: "Pick for me",
+  "引く！": "Draw!",
+  // reveal / result
+  スキップ: "Skip",
+  "マグカップ当選！": "You won a mug!",
+  "AIがおみくじを書いています…": "AI is writing your fortune…",
+  タップで裏返す: "Tap to flip",
+  あなたの運勢は: "Your fortune",
+  スタッフにお声がけください: "Please speak to a staff member.",
+  "裏面の「AIを仕事で使うコツ」もぜひ読んでみてください。": "Flip it over for tips on using AI at work.",
+  "印刷しています。プリンターからお受け取りください。": "Printing now. Please take your slip from the printer.",
+  "スタッフが印刷してお渡しします。": "A staff member will print it for you.",
+  表を見る: "See the front",
+  "裏（AIミニ解説）を見る": "See the back (AI tips)",
+  おわる: "Finish",
+  // slip
+  AIおみくじ: "AI Omikuji",
+  運勢: "Fortune",
+  仕事運: "Work",
+  健康運: "Health",
+  ひとこと: "Message",
+  適職運: "Career match",
+  "当たり！": "WIN!",
+  マグカップ当選: "Mug prize",
+  この紙をスタッフにお見せください: "Show this slip to a staff member",
+  裏面: "Back",
+  AIミニ解説: "AI mini guide",
+  あなたのおみくじを作った指示文: "The prompt that wrote your fortune",
+  この紙を作った指示文: "The prompt that wrote this slip",
+  AIを仕事で使うコツ: "Tips for using AI at work",
+  相談窓口: "Contact",
+  "IT統括部 アプリケーションサポート": "IT Division, Application Support",
+  業務でAIを試したいときは気軽にご相談ください: "Want to try AI in your work? Just ask us.",
+  AI活用ガイドのQRコード: "QR code for the AI guide",
+  // tips
+  "個人情報・社外秘は入力しない": "Never enter personal or confidential information.",
+  AIの答えは必ず人が確認する: "Always have a person check the AI's answer.",
+  "指示は具体的に（誰に・何を・何字で）": "Be specific: who it's for, what you need, how long.",
+  目的や前提を最初に伝える: "Start by explaining your goal and background.",
+  "役割を与える（例：「あなたは総務の担当者です」）": 'Give it a role (e.g. "You work in General Affairs").',
+  "出力の形を指定する（箇条書き・表・3行で など）": "Say what form you want: bullets, a table, 3 lines…",
+  お手本の例文を1つ見せると近い形で返ってくる: "Show one example and you'll get something close to it.",
+  "一度で終わらせず「もっと短く」などと直してもらう": 'Don\'t stop at one try. Ask for changes like "shorter".',
+  "数字・日付・固有名詞は元の資料で確かめる": "Check numbers, dates and names against the source.",
+  "分からないときは「分からない」と答えてよいと伝える": 'Tell it that "I don\'t know" is an acceptable answer.',
+  "長い資料は「要点を3つ」のようにまとめ方を指定する": 'For long documents, say how to summarise ("3 key points").',
+  会社で認められたAIツールを使う: "Use the AI tools your company has approved.",
+  AIの答えをそのまま社外に出さない: "Don't send AI output outside the company as is.",
+  間違いはどこが違うかを伝えて直してもらう: "When it's wrong, say what's wrong and ask it to fix it.",
+  まずは下書きやアイデア出しから使ってみる: "Start by using it for drafts and ideas.",
+};
+
+/** The English for a Japanese UI string (unchanged when there is none, e.g. a custom department). */
+export function tr(lang: Lang, ja: string): string {
+  return lang === "en" ? (EN[ja] ?? ja) : ja;
+}
+
+/** English name and romaji for each fortune. */
+export const FORTUNE_EN: Record<string, { name: string; romaji: string }> = {
+  大大吉: { name: "Supreme Blessing", romaji: "daidaikichi" },
+  大吉: { name: "Great Blessing", romaji: "daikichi" },
+  中吉: { name: "Good Blessing", romaji: "chūkichi" },
+};

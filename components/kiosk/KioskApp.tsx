@@ -25,6 +25,8 @@ import { Cabinet } from "../Cabinet";
 import { Reveal } from "../Reveal";
 import TiltedCard from "../TiltedCard";
 import { FortuneName, PrintSlip, SlipBack, SlipFront, useGuideQr, type SlipData } from "../Slip";
+import { FORTUNE_EN, tr, type Lang } from "@/lib/i18n";
+import { LangProvider, LangToggle } from "@/lib/useLang";
 
 type Screen = "idle" | "about" | "ai" | "pick" | "reveal" | "result";
 const PROGRESS: Screen[] = ["about", "ai", "pick", "result"];
@@ -50,6 +52,9 @@ export function KioskApp() {
   // Start screen: play the intro (AI → おみくじ) once, then loop its ending and show START.
   const [idlePhase, setIdlePhase] = useState<"intro" | "loop">("intro");
   const [soundBlocked, setSoundBlocked] = useState(false);
+  const [lang, setLang] = useState<Lang>("ja");
+  const t = (ja: string) => tr(lang, ja);
+  const en = lang === "en";
   const qr = useGuideQr();
   const mon = useRef<MonitorState>(EMPTY_MONITOR);
 
@@ -69,6 +74,7 @@ export function KioskApp() {
 
   const reset = useCallback(() => {
     setScreen("idle");
+    setLang("ja");
     setGender("回答しない");
     setAge("");
     setDept("");
@@ -217,7 +223,7 @@ export function KioskApp() {
     setScreen("reveal");
 
     const match = pickMatch(st.depts, dept);
-    const input = { fortune, age, gender, dept, match };
+    const input = { fortune, age, gender, dept, match, lang };
     const prompt = buildPrompt(input);
     pushMon({ phase: "drawing", steps: IDLE_STEPS, prompt: "", answer: "", checks: "", fortune, win, no });
     setStep(0, "done", `第${kan(no)}番 ・ ${dept || "部署未回答"}`);
@@ -229,16 +235,16 @@ export function KioskApp() {
     let text = aiReady ? await generate(input, (t) => pushMon({ answer: t })) : "";
     let source = "生成AI";
     if (!text.trim()) {
-      text = templateText(dept, match);
+      text = templateText(dept, match, lang);
       source = "用意した文章";
     }
     pushMon({ answer: text });
     setStep(3, "done", source);
 
-    let parsed = parseFortune(text);
-    const err = checkFortune(parsed, match);
+    let parsed = parseFortune(text, lang);
+    const err = checkFortune(parsed, match, lang);
     if (err) {
-      parsed = parseFortune(templateText(dept, match));
+      parsed = parseFortune(templateText(dept, match, lang), lang);
       pushMon({ checks: `確認NG（${err}）→ 安全な文章に差し替えて印刷` });
       setStep(4, "warn", "差し替え");
     } else {
@@ -253,20 +259,22 @@ export function KioskApp() {
   const stepIdx = PROGRESS.indexOf(screen);
 
   return (
-    <div className="kiosk" data-screen={screen}>
+    <LangProvider value={lang}>
+    <div className="kiosk" data-screen={screen} lang={lang}>
       {screen !== "idle" && screen !== "reveal" && <BgVideo />}
       {screen !== "idle" && screen !== "reveal" && (
         <header className="kbar">
           <LogoImage height={64} />
-          <ol className="dots" aria-label="すすみ具合">
+          <ol className="dots" aria-label={t("すすみ具合")}>
             {PROGRESS.map((p, i) => (
               <li key={p} data-on={i <= stepIdx}>
-                {["あなた", "AI", "引き出し", "結果"][i]}
+                {t(["あなた", "AI", "引き出し", "結果"][i])}
               </li>
             ))}
           </ol>
+          <LangToggle lang={lang} onChange={(l) => (sfx.tap(), setLang(l))} />
           <span className="counter">
-            <span>当たり残り</span>
+            <span>{t("当たり残り")}</span>
             <b>{mugsLeft}</b>
             <small>/ {st.mugs}</small>
           </span>
@@ -274,7 +282,7 @@ export function KioskApp() {
       )}
 
       {screen === "idle" && (
-        <button className={idleVideo ? "idle hasvid" : "idle"} onClick={start} aria-label="タッチしてスタート">
+        <button className={idleVideo ? "idle hasvid" : "idle"} onClick={start} aria-label={t("タッチしてスタート")}>
           {idleVideo &&
             (idlePhase === "intro" ? (
               <video
@@ -308,15 +316,31 @@ export function KioskApp() {
           <Sparkle className="is2" color="#86efac" />
           <Sparkle className="is3" color="#f5cb32" />
           <div className="idlecard">
-            <p className="pill">IT Connect Fes 2026 ・ IT統括部</p>
-            <h1>
-              AIが書く、
-              <br />
-              <em>あなただけ</em>のおみくじ
-            </h1>
-            <span className={idlePhase === "loop" ? "btn primary startbtn show" : "btn primary startbtn"}>{idleVideo ? "START" : "タッチしてスタート"}</span>
+            <p className="pill">{t("IT Connect Fes 2026 ・ IT統括部")}</p>
+            {en ? (
+              <h1>
+                A fortune written by AI,
+                <br />
+                <em>just for you</em>
+              </h1>
+            ) : (
+              <h1>
+                AIが書く、
+                <br />
+                <em>あなただけ</em>のおみくじ
+              </h1>
+            )}
+            <span className={idlePhase === "loop" ? "btn primary startbtn show" : "btn primary startbtn"}>{idleVideo ? "START" : t("タッチしてスタート")}</span>
             <p className="idlemug">
-              当たりのマグカップ <b>残り {mugsLeft}</b> / {st.mugs}個
+              {en ? (
+                <>
+                  Prize mugs <b>{mugsLeft} left</b> / {st.mugs}
+                </>
+              ) : (
+                <>
+                  当たりのマグカップ <b>残り {mugsLeft}</b> / {st.mugs}個
+                </>
+              )}
             </p>
           </div>
           {!idleVideo && (
@@ -326,29 +350,30 @@ export function KioskApp() {
           )}
         </button>
       )}
+      {screen === "idle" && <LangToggle className="idlelang" lang={lang} onChange={(l) => (unlockAudio(), sfx.tap(), setLang(l))} />}
       {screen === "idle" && st.sound && soundBlocked && (
-        <button type="button" className="soundbtn" onClick={enableSound} aria-label="音を出す">
-          <span aria-hidden>🔊</span> 音を出す
+        <button type="button" className="soundbtn" onClick={enableSound} aria-label={t("音を出す")}>
+          <span aria-hidden>🔊</span> {t("音を出す")}
         </button>
       )}
 
       {screen === "about" && (
         <main className="kpage">
           <div className="khd">
-            <h2>あなたについて</h2>
-            <p>わかる範囲でOKです。名前は入力しません。</p>
+            <h2>{t("あなたについて")}</h2>
+            <p>{t("わかる範囲でOKです。名前は入力しません。")}</p>
           </div>
           <div className="kcard">
-            <Row label="性別" items={[...GENDERS]} value={gender} onPick={setGender} />
-            <Row label="年齢（任意）" items={["答えない", ...AGES]} value={age || "答えない"} onPick={(v) => setAge(v === "答えない" ? "" : v)} />
-            <Row label="部署" items={["回答しない", ...st.depts]} value={dept || "回答しない"} onPick={(v) => setDept(v === "回答しない" ? "" : v)} />
+            <Row label={t("性別")} t={t} items={[...GENDERS]} value={gender} onPick={setGender} />
+            <Row label={t("年齢（任意）")} t={t} items={["答えない", ...AGES]} value={age || "答えない"} onPick={(v) => setAge(v === "答えない" ? "" : v)} />
+            <Row label={t("部署")} t={t} items={["回答しない", ...st.depts]} value={dept || "回答しない"} onPick={(v) => setDept(v === "回答しない" ? "" : v)} />
           </div>
           <nav className="knav">
             <button className="btn big" onClick={() => go("idle")}>
-              ← もどる
+              {t("← もどる")}
             </button>
             <button className="btn big primary" onClick={() => go("ai")}>
-              次へ →
+              {t("次へ →")}
             </button>
           </nav>
         </main>
@@ -357,8 +382,8 @@ export function KioskApp() {
       {screen === "ai" && (
         <main className="kpage">
           <div className="khd">
-            <h2>お仕事でAIを使っていますか？</h2>
-            <p>タップすると次へすすみます。</p>
+            <h2>{t("お仕事でAIを使っていますか？")}</h2>
+            <p>{t("タップすると次へすすみます。")}</p>
           </div>
           <div className="aitiles">
             {AI_USE.map((a, i) => (
@@ -372,17 +397,17 @@ export function KioskApp() {
                   setTimeout(() => setScreen("pick"), 250);
                 }}
               >
-                <span className="aimark">{["毎", "時", "試", "初"][i]}</span>
-                {a}
+                <span className="aimark">{(en ? ["E", "S", "T", "N"] : ["毎", "時", "試", "初"])[i]}</span>
+                {t(a)}
               </button>
             ))}
           </div>
           <nav className="knav">
             <button className="btn big" onClick={() => go("about")}>
-              ← もどる
+              {t("← もどる")}
             </button>
             <button className="btn big" onClick={() => go("pick")}>
-              答えずに次へ →
+              {t("答えずに次へ →")}
             </button>
           </nav>
         </main>
@@ -401,10 +426,23 @@ export function KioskApp() {
             />
           </div>
           <aside className="pickside">
-            <h2>引き出しをひとつ選んでください</h2>
+            <h2>
+              {en ? (
+                "Choose one drawer"
+              ) : (
+                <>
+                  <span className="nb">引き出しを</span>
+                  <span className="nb">ひとつ選んでください</span>
+                </>
+              )}
+            </h2>
             <div className="picked">
               {pick == null ? (
-                <span className="none">まだ選んでいません</span>
+                <span className="none">{t("まだ選んでいません")}</span>
+              ) : en ? (
+                <>
+                  No. <b>{pick}</b>
+                </>
               ) : (
                 <>
                   第<b>{kan(pick)}</b>番
@@ -412,20 +450,20 @@ export function KioskApp() {
               )}
             </div>
             <button className="btn big" onClick={() => (sfx.tap(), setPick(1 + Math.floor(rnd() * 100)))}>
-              おまかせで選ぶ
+              {t("おまかせで選ぶ")}
             </button>
             <button className="btn big primary drawbtn" disabled={pick == null} onClick={runDraw}>
-              引く！
+              {t("引く！")}
             </button>
             <button className="linkbtn" onClick={() => go("ai")}>
-              ← もどる
+              {t("← もどる")}
             </button>
           </aside>
         </main>
       )}
 
       {screen === "reveal" && draw && <Reveal fortune={draw.fortune} win={draw.win} onDone={() => setRevealDone(true)} />}
-      {screen === "reveal" && revealDone && !slip && <div className="waiting">AIがおみくじを書いています…</div>}
+      {screen === "reveal" && revealDone && !slip && <div className="waiting">{t("AIがおみくじを書いています…")}</div>}
 
       {screen === "result" && slip && (
         <main className="kpage resultpage">
@@ -449,41 +487,43 @@ export function KioskApp() {
             >
               <SlipFront data={slip} />
             </TiltedCard>
-            <p className="fliphint">タップで裏返す</p>
+            <p className="fliphint">{t("タップで裏返す")}</p>
           </div>
           <aside className="resside">
-            <p className="reslabel">あなたの運勢は</p>
+            <p className="reslabel">{t("あなたの運勢は")}</p>
             <p className={`resluck t3d ${slip.fortune === "大大吉" ? "daidaikichi" : slip.fortune === "大吉" ? "daikichi" : "chukichi"}`}>
               <FortuneName fortune={slip.fortune} />
             </p>
+            {en && <p className="resen">{FORTUNE_EN[slip.fortune]?.name}</p>}
             {slip.win ? (
               <div className="reswin">
-                <b>マグカップ当選！</b>
-                スタッフにお声がけください
+                <b>{t("マグカップ当選！")}</b>
+                {t("スタッフにお声がけください")}
               </div>
             ) : (
-              <p className="resmsg">裏面の「AIを仕事で使うコツ」もぜひ読んでみてください。</p>
+              <p className="resmsg">{t("裏面の「AIを仕事で使うコツ」もぜひ読んでみてください。")}</p>
             )}
-            <p className="resprint">{st.autoPrint ? "印刷しています。プリンターからお受け取りください。" : "スタッフが印刷してお渡しします。"}</p>
+            <p className="resprint">{t(st.autoPrint ? "印刷しています。プリンターからお受け取りください。" : "スタッフが印刷してお渡しします。")}</p>
             <div className="resbtns">
               <button className="btn big" onClick={() => (sfx.tap(), setShowBack((b) => !b))}>
-                {showBack ? "表を見る" : "裏（AIミニ解説）を見る"}
+                {t(showBack ? "表を見る" : "裏（AIミニ解説）を見る")}
               </button>
               <button className="btn big primary" onClick={() => (sfx.tap(), reset())}>
-                おわる
+                {t("おわる")}
               </button>
             </div>
-            <p className="rescount">あと {Math.max(0, left)} 秒で最初の画面にもどります</p>
+            <p className="rescount">{en ? `Back to the start in ${Math.max(0, left)} s` : `あと ${Math.max(0, left)} 秒で最初の画面にもどります`}</p>
           </aside>
         </main>
       )}
 
       <PrintSlip data={slip} qr={qr} />
     </div>
+    </LangProvider>
   );
 }
 
-function Row({ label, items, value, onPick }: { label: string; items: string[]; value: string; onPick: (v: string) => void }) {
+function Row({ label, items, value, onPick, t }: { label: string; items: string[]; value: string; onPick: (v: string) => void; t: (s: string) => string }) {
   return (
     <div className="krow">
       <p className="q">{label}</p>
@@ -498,7 +538,7 @@ function Row({ label, items, value, onPick }: { label: string; items: string[]; 
               onPick(it);
             }}
           >
-            {it}
+            {t(it)}
           </button>
         ))}
       </div>
