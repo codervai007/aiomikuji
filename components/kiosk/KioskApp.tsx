@@ -46,6 +46,8 @@ export function KioskApp() {
   const [aiReady, setAiReady] = useState(false);
   const [idleVideo, setIdleVideo] = useState(true);
   const [idleReady, setIdleReady] = useState(false);
+  // Start screen: play the intro (AI → おみくじ) once, then loop its ending and show START.
+  const [idlePhase, setIdlePhase] = useState<"intro" | "loop">("intro");
   const qr = useGuideQr();
   const mon = useRef<MonitorState>(EMPTY_MONITOR);
 
@@ -75,6 +77,26 @@ export function KioskApp() {
     setRevealDone(false);
     setShowBack(false);
   }, []);
+
+  // Each time the start screen comes back, play the intro again; replay it every 45 s while idle.
+  useEffect(() => {
+    if (screen === "idle") setIdlePhase("intro");
+  }, [screen]);
+  useEffect(() => {
+    if (screen !== "idle") return;
+    const t = setTimeout(() => setIdlePhase(idlePhase === "intro" ? "loop" : "intro"), idlePhase === "intro" ? 15000 : 45000);
+    return () => clearTimeout(t);
+  }, [screen, idlePhase]);
+
+  // A video that failed before the page finished loading never fires onError; check it directly.
+  useEffect(() => {
+    if (screen !== "idle") return;
+    const t = setTimeout(() => {
+      const v = document.querySelector<HTMLVideoElement>(".idlevid");
+      if (v?.error) setIdleVideo(false);
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [screen, idlePhase]);
 
   // Back to the start screen after a minute without a touch.
   useEffect(() => {
@@ -201,8 +223,33 @@ export function KioskApp() {
       )}
 
       {screen === "idle" && (
-        <button className={idleVideo && idleReady ? "idle hasvid" : "idle"} onClick={start} aria-label="タッチしてスタート">
-          {idleVideo && <video className="idlevid" src="/media/idle.mp4" autoPlay muted loop playsInline onLoadedData={() => setIdleReady(true)} onError={() => setIdleVideo(false)} />}
+        <button className={idleVideo ? "idle hasvid" : "idle"} onClick={start} aria-label="タッチしてスタート">
+          {idleVideo &&
+            (idlePhase === "intro" ? (
+              <video
+                key="intro"
+                className="idlevid"
+                src="/media/intro.mp4"
+                autoPlay
+                muted
+                playsInline
+                onLoadedData={() => setIdleReady(true)}
+                onEnded={() => setIdlePhase("loop")}
+                onError={() => setIdlePhase("loop")}
+              />
+            ) : (
+              <video
+                key="loop"
+                className="idlevid"
+                src="/media/idle.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                onLoadedData={() => setIdleReady(true)}
+                onError={() => setIdleVideo(false)}
+              />
+            ))}
           <Sparkle className="is1" color="#e9525c" />
           <Sparkle className="is2" color="#86efac" />
           <Sparkle className="is3" color="#f5cb32" />
@@ -213,7 +260,7 @@ export function KioskApp() {
               <br />
               <em>あなただけ</em>のおみくじ
             </h1>
-            <span className="btn primary startbtn">{idleVideo && idleReady ? "START" : "タッチしてスタート"}</span>
+            <span className={idlePhase === "loop" ? "btn primary startbtn show" : "btn primary startbtn"}>{idleVideo ? "START" : "タッチしてスタート"}</span>
             <p className="idlemug">
               当たりのマグカップ <b>残り {mugsLeft}</b> / {st.mugs}個
             </p>
