@@ -23,6 +23,7 @@ import { BgVideo } from "../BgVideo";
 import { LogoImage } from "../Logo";
 import { Cabinet } from "../Cabinet";
 import { Reveal } from "../Reveal";
+import TiltedCard from "../TiltedCard";
 import { FortuneName, PrintSlip, SlipBack, SlipFront, useGuideQr, type SlipData } from "../Slip";
 
 type Screen = "idle" | "about" | "ai" | "pick" | "reveal" | "result";
@@ -374,7 +375,27 @@ export function KioskApp() {
       {screen === "result" && slip && (
         <main className="kpage resultpage">
           {slip.win && <Confetti />}
-          <div className="resslip">{showBack ? <SlipBack data={slip} qr={qr} /> : <SlipFront data={slip} />}</div>
+          <div className="resslip">
+            <TiltedCard
+              containerWidth="100%"
+              containerHeight="auto"
+              imageWidth="100%"
+              imageHeight="auto"
+              rotateAmplitude={10}
+              scaleOnHover={1.03}
+              glare={0.35}
+              shadow={0.55}
+              flipped={showBack}
+              onFlip={(f) => {
+                sfx.tap();
+                setShowBack(f);
+              }}
+              backContent={<SlipBack data={slip} qr={qr} />}
+            >
+              <SlipFront data={slip} />
+            </TiltedCard>
+            <p className="fliphint">タップで裏返す</p>
+          </div>
           <aside className="resside">
             <p className="reslabel">あなたの運勢は</p>
             <p className={`resluck t3d ${slip.fortune === "大大吉" ? "daidaikichi" : slip.fortune === "大吉" ? "daikichi" : "chukichi"}`}>

@@ -706,3 +706,29 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 
 :root[data-theme=dark] body .home :is(.herocard,.launchcard){background:rgba(8,6,10,.5)!important}
 .kbg{opacity:.45;filter:blur(3px) saturate(1.2)}
+
+/* ---------- TiltedCard ---------- */
+.tc{position:relative;margin:0;perspective:900px;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
+.tc-inner{position:relative;transform-style:preserve-3d;will-change:transform}
+.tc-flip{position:relative;width:100%;height:100%;display:grid;transform-style:preserve-3d}
+.tc-face{grid-area:1/1;position:relative;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
+.tc-back{transform:rotateY(180deg)}
+.tc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tc-glare{position:absolute;inset:0;pointer-events:none;z-index:6}
+.tc-layer{position:absolute;inset:0;pointer-events:none;z-index:4}
+.tc-tip{position:absolute;left:0;top:0;pointer-events:none;z-index:8;margin:12px 0 0 12px;padding:4px 10px;border-radius:8px;background:rgba(0,0,0,.7);color:#fff;font-size:13px;white-space:nowrap}
+/* slips on a tilted card: solid glass (backdrop blur breaks 3D flips) */
+.tc .slip{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+:root[data-theme=dark] body .tc .slip{background:rgba(16,12,20,.94)!important}
+.resslip{overflow:visible!important;padding:0!important;display:grid;gap:10px;justify-items:center}
+.fliphint{margin:0;font-size:14px;color:var(--mute)}
+/* home cards */
+.launch .tc{height:300px}
+.tcshade{position:absolute;inset:0;border-radius:18px;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.8));z-index:2}
+.tctitle{position:absolute;left:22px;bottom:40px;margin:0;display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.tchint{position:absolute;left:24px;bottom:16px;font-size:13px;color:rgba(255,255,255,.75)}
+.tcback{height:100%;display:grid;align-content:center;gap:14px;padding:26px;border-radius:18px;background:rgba(14,10,18,.94);border:1px solid rgba(255,255,255,.22);text-align:left}
+.tcback h3{display:flex;align-items:center;gap:12px;margin:0;font-size:24px;font-weight:800}
+.tcback p{margin:0;font-size:16px;color:var(--mute)}
+.tcback .btn{justify-self:start}
+.tc-layer,.tc-glare,.tcshade,.tc-img{backface-visibility:hidden;-webkit-backface-visibility:hidden}

@@ -1,10 +1,11 @@
 import { OmikujiTube, Sparkle } from "@/components/Art";
 import { LogoImage } from "@/components/Logo";
+import TiltedCard, { TiltedCardLayer } from "@/components/TiltedCard";
 
 const SCREENS = [
-  { href: "/omikuji", c: "c1", n: "一", t: "おみくじ画面", d: "来場者がさわるタッチパネルの画面。全画面・横向きで使います。" },
-  { href: "/monitor", c: "c2", n: "二", t: "裏側モニター", d: "ブース後方の大きな画面。おみくじ画面の動きがリアルタイムで映ります。" },
-  { href: "/staff", c: "c3", n: "三", t: "スタッフ設定", d: "当たりの数・裏面のコツ・部署・アンケート集計（PINが必要）。" },
+  { href: "/omikuji", img: "/media/idle-poster.jpg", c: "c1", n: "一", t: "おみくじ画面", d: "来場者がさわるタッチパネルの画面。全画面・横向きで使います。" },
+  { href: "/monitor", img: "/media/intro-poster.jpg", c: "c2", n: "二", t: "裏側モニター", d: "ブース後方の大きな画面。おみくじ画面の動きがリアルタイムで映ります。" },
+  { href: "/staff", img: "/media/home-bg-poster.jpg", c: "c3", n: "三", t: "スタッフ設定", d: "当たりの数・裏面のコツ・部署・アンケート集計（PINが必要）。" },
 ];
 
 export default function Page() {
@@ -26,14 +27,41 @@ export default function Page() {
         </div>
         <div className="launch">
           {SCREENS.map((s) => (
-            <a key={s.href} className={`card ${s.c} launchcard`} href={s.href}>
-              <h3>
-                <span className="num">{s.n}</span>
-                {s.t}
-              </h3>
-              <p>{s.d}</p>
-              <span className="btn primary">開く →</span>
-            </a>
+            <TiltedCard
+              key={s.href}
+              imageSrc={s.img}
+              altText={s.t}
+              captionText={s.t}
+              containerHeight="300px"
+              containerWidth="100%"
+              imageHeight="300px"
+              imageWidth="100%"
+              rotateAmplitude={12}
+              scaleOnHover={1.05}
+              glare={0.5}
+              shadow={0.5}
+              backContent={
+                <div className="tcback">
+                  <h3>
+                    <span className="num">{s.n}</span>
+                    {s.t}
+                  </h3>
+                  <p>{s.d}</p>
+                  <a className="btn primary" href={s.href}>
+                    開く →
+                  </a>
+                </div>
+              }
+            >
+              <div className="tcshade" />
+              <TiltedCardLayer depth={40}>
+                <h3 className="tctitle">
+                  <span className="num">{s.n}</span>
+                  {s.t}
+                </h3>
+                <span className="tchint">タップで裏返す</span>
+              </TiltedCardLayer>
+            </TiltedCard>
           ))}
         </div>
       </div>
