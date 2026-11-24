@@ -337,7 +337,7 @@ select{appearance:none;padding-right:42px;min-width:170px;cursor:pointer;backgro
 .mpair section.manswer{box-shadow:inset 0 12px 0 var(--pink),var(--shL);padding-top:32px}
 .mpair h2{font-size:1.05em;font-weight:800;margin:0 0 12px}
 .mpair pre{margin:0;white-space:pre-wrap;word-break:break-word;font:500 1em/1.6 var(--sans);flex:1;min-height:0;overflow:hidden}
-.manswer pre{font-size:1.2em;font-weight:600}
+.manswer pre{font-size:1.05em;font-weight:600}
 .mchecks{margin:12px 0 0;font-weight:700;font-size:.9em}
 .mresult{display:flex;align-items:center;gap:18px;margin-top:16px;border:var(--b);border-radius:14px;box-shadow:var(--sh);padding:10px 18px}
 .mart{width:clamp(64px,5vw,96px);height:auto;background:#fff;border:var(--b);border-radius:12px;padding:4px}
@@ -376,3 +376,76 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
   .p-foot{text-align:center;font-size:9pt}
   .printarea hr{border:0;border-top:1px dashed #000;margin:2mm 0}
 }
+
+/* ---------- dark theme (SpaceX-style: black, D-DIN, thin lines) ---------- */
+@font-face{font-family:"D-DIN";font-weight:400;font-style:normal;font-display:swap;src:url("/fonts/d-din/d-din-400.woff2") format("woff2")}
+@font-face{font-family:"D-DIN";font-weight:700;font-style:normal;font-display:swap;src:url("/fonts/d-din/d-din-700.woff2") format("woff2")}
+:root[data-theme=dark]{
+  color-scheme:dark;
+  --bg:#000;--cream:#0d0d10;--card:#050507;--ink:#f0f0fa;--mute:#8f8f9c;--line:rgba(240,240,250,.28);--peach:#f0f0fa;
+  --sans:"D-DIN","BIZ UDPGothic",ui-sans-serif,system-ui,sans-serif;--mincho:"D-DIN","BIZ UDPGothic",sans-serif;--mono:"Roboto Mono","BIZ UDPGothic",monospace;
+}
+:root[data-theme=dark] body{background:#000}
+:root[data-theme=dark] body *{box-shadow:none!important;filter:none}
+:root[data-theme=dark] body *:not(svg):not(svg *){border-width:1px!important;border-color:var(--line)!important}
+:root[data-theme=dark] body *:not(.dr i):not(.confetti i):not(svg *){border-radius:4px}
+:root[data-theme=dark] :where(.btn,.kchip,.seg span,.sides button,.skip,.linkbtn){transition:background .2s,color .2s}
+
+/* type */
+:root[data-theme=dark] :where(h1,h2,h3,.khd h2,.sechd h2,.mhd h1,.idlecard h1,.herocard h1,.pickside h2,.logo){font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:-.01em}
+:root[data-theme=dark] :where(.pill,.tag,.q,.lbl,.mwho,.who,.dots li,.counter span,.counter small,.mstats span,.kicker,.reslabel,.slipft,.rescount,.slipnote,.note,.small,.mode,.luckbox .lt>span,.idlemug,.resprint,.flow em,.mflow em,.checks,.mchecks,.url){font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;font-weight:400}
+:root[data-theme=dark] .herocard h1 em,:root[data-theme=dark] .idlecard h1 em{color:var(--ink);opacity:.55}
+
+/* surfaces */
+:root[data-theme=dark] :where(.luckbox .lt>span,.card,.kcard,.aitile,.herocard,.idlecard,.staff,.window,.mpair section,.mflow,.mstats div,.picked,.pincard,.statcard,.wbar,.tips label,.toggle,.kchip,.seg span,.tag,.pill,.dots li,.mwho,.who,.counter,.sides,.slip,.luckbox,.wincall,.tiplist li,.back pre,.mresult,.mfoot,.mode,.chips li){background:var(--card)!important;color:var(--ink)}
+:root[data-theme=dark] :where(.monitor,.mon,.idle,.kiosk,.staffpage,.pinpage){background:#000}
+:root[data-theme=dark] .wbar i{background:transparent!important}
+
+/* buttons & choices: outline, invert when active */
+:root[data-theme=dark] .btn{background:transparent;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+:root[data-theme=dark] .btn:hover,:root[data-theme=dark] .btn.primary{background:var(--ink)!important;color:#000!important;transform:none}
+:root[data-theme=dark] .btn:active{transform:none;opacity:.8}
+:root[data-theme=dark] :where(.kchip.on,.seg input:checked+span,.sides button[aria-pressed=true],.dots li[data-on=true],.aitile.on){background:var(--ink)!important;color:#000!important;transform:none}
+:root[data-theme=dark] .startbtn{animation:none}
+:root[data-theme=dark] :where(.num,.aimark,.ic,.mnode,.node){background:transparent!important;color:var(--ink)!important;font-family:var(--sans)}
+:root[data-theme=dark] :where(.mflow li[data-s=run] .mnode,.flow li[data-s=run] .node){background:var(--ink)!important;color:#000!important}
+:root[data-theme=dark] :where(.mflow li[data-s=done] .mnode,.flow li[data-s=done] .node){border-color:var(--ink)!important}
+:root[data-theme=dark] :where(.mflow li[data-s=warn] .mnode){border-color:#f5cb32!important;color:#f5cb32!important}
+:root[data-theme=dark] .mflow li[data-s] em,:root[data-theme=dark] .flow li[data-s] em{color:var(--mute)}
+:root[data-theme=dark] .mflow li[data-s=done] em,:root[data-theme=dark] .mflow li[data-s=run] em,:root[data-theme=dark] .mflow li[data-s=warn] em{color:var(--ink)}
+:root[data-theme=dark] .mhd h1 span{color:var(--mute)}
+:root[data-theme=dark] .mfoot b{background:var(--ink);color:#000}
+:root[data-theme=dark] select{background-color:var(--card);color:var(--ink);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1.5 1.5l5.5 5.5 5.5-5.5' fill='none' stroke='%23f0f0fa' stroke-width='1.5'/%3E%3C/svg%3E")}
+:root[data-theme=dark] :where(input,textarea){background:var(--card);color:var(--ink)}
+:root[data-theme=dark] .logo i{background:transparent;font-family:var(--sans)}
+
+/* decorations off */
+:root[data-theme=dark] :where(.sp,.is1,.is2,.is3,.rs1,.rs2,.rs3,.ms1,.idletube,.heroart,.roof,.rtube){display:none}
+
+/* cabinet: minimal grid */
+:root[data-theme=dark] .shrine{filter:none}
+:root[data-theme=dark] .body{background:transparent;border-top-width:1px!important;border-top-style:solid;border-radius:4px}
+:root[data-theme=dark] .plate{background:transparent;color:var(--ink);font-family:var(--sans);letter-spacing:.5em}
+:root[data-theme=dark] .dr{background:var(--cream);color:var(--ink)}
+:root[data-theme=dark] .dr .k{font-family:var(--sans);font-weight:400}
+:root[data-theme=dark] .dr i{border-color:var(--mute)!important}
+:root[data-theme=dark] .dr:hover{transform:none;background:#1a1a20}
+:root[data-theme=dark] .dr[aria-pressed=true]{background:var(--ink);color:#000;transform:none}
+:root[data-theme=dark] .dr[aria-pressed=true] i{border-color:#000!important}
+:root[data-theme=dark] .base{height:1px;margin:0;background:var(--line)}
+:root[data-theme=dark] .picked b,:root[data-theme=dark] .pick b{color:var(--ink);font-family:var(--sans)}
+
+/* slip */
+:root[data-theme=dark] .slip.win{border-color:#e9525c!important}
+:root[data-theme=dark] .luckbox b,:root[data-theme=dark] .resluck{font-family:var(--sans);font-weight:700}
+:root[data-theme=dark] .art,:root[data-theme=dark] .rart,:root[data-theme=dark] .mart{background:#f0f0fa!important}
+:root[data-theme=dark] .wincall b{color:#e9525c}
+:root[data-theme=dark] .tiplist li::before{border-color:var(--ink)!important}
+
+/* reveal & 3D titles become clean white type */
+:root[data-theme=dark] .reveal.anim{background:#000!important}
+:root[data-theme=dark] .t3d{color:var(--ink);-webkit-text-stroke:0;text-shadow:0 0 60px rgba(240,240,250,.28);font-family:var(--sans);font-weight:700;letter-spacing:.06em}
+:root[data-theme=dark] .t3d rt{color:var(--mute);font-family:var(--mono);letter-spacing:.3em}
+:root[data-theme=dark] .mresult{border-color:var(--line)!important}
+:root[data-theme=dark] .mresult b{font-family:var(--sans)}
+@media print{:root[data-theme=dark] body{background:#fff}}

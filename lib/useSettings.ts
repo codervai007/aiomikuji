@@ -15,6 +15,7 @@ export type Settings = {
   sound: boolean;
   autoPrint: boolean;
   resetSeconds: number;
+  theme: "light" | "dark";
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -29,6 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sound: true,
   autoPrint: false,
   resetSeconds: 20,
+  theme: "light",
 };
 
 export const SETTINGS_KEY = "omikuji-booth-v3";
@@ -48,6 +50,7 @@ export function sanitize(raw: unknown): Settings {
     sound: s.sound !== false,
     autoPrint: s.autoPrint === true,
     resetSeconds: Math.min(120, Math.max(5, num(s.resetSeconds, 20))),
+    theme: s.theme === "dark" ? "dark" : "light",
   };
 }
 
@@ -81,6 +84,7 @@ export function useSettings() {
 
   useEffect(() => {
     if (!loaded) return;
+    document.documentElement.dataset.theme = st.theme;
     try {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(st));
     } catch {

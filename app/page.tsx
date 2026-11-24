@@ -1,4 +1,5 @@
 import { OmikujiTube, Sparkle } from "@/components/Art";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const SCREENS = [
   { href: "/kiosk", c: "c1", n: "一", t: "キオスク", d: "来場者がさわるタッチパネル。全画面・横向きで使います。" },
@@ -20,6 +21,9 @@ export default function Page() {
               <em>ブース</em>
             </h1>
             <p className="lead">同じパソコンで「キオスク」と「裏側モニター」を別々のウィンドウで開くと、自動で連動します。</p>
+            <div className="cta">
+              <ThemeToggle />
+            </div>
           </div>
           <div className="heroart">
             <OmikujiTube />
