@@ -12,6 +12,9 @@ export type Settings = {
   tipMode: "random" | "fixed";
   depts: string[];
   log: LogRow[];
+  sound: boolean;
+  autoPrint: boolean;
+  resetSeconds: number;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -23,11 +26,14 @@ export const DEFAULT_SETTINGS: Settings = {
   tipMode: "random",
   depts: DEFAULT_DEPTS,
   log: [],
+  sound: true,
+  autoPrint: false,
+  resetSeconds: 20,
 };
 
-const KEY = "omikuji-booth-v3";
+export const SETTINGS_KEY = "omikuji-booth-v3";
 
-function sanitize(raw: unknown): Settings {
+export function sanitize(raw: unknown): Settings {
   const s = { ...DEFAULT_SETTINGS, ...(raw && typeof raw === "object" ? raw : {}) } as Settings;
   const num = (v: unknown, d: number) => (Number.isFinite(Number(v)) ? Math.max(0, Math.floor(Number(v))) : d);
   return {
@@ -39,28 +45,44 @@ function sanitize(raw: unknown): Settings {
     tipMode: s.tipMode === "fixed" ? "fixed" : "random",
     depts: Array.isArray(s.depts) && s.depts.length ? s.depts.map(String).slice(0, 40) : DEFAULT_DEPTS,
     log: Array.isArray(s.log) ? s.log.slice(-3000) : [],
+    sound: s.sound !== false,
+    autoPrint: s.autoPrint === true,
+    resetSeconds: Math.min(120, Math.max(5, num(s.resetSeconds, 20))),
   };
 }
 
-/** Booth settings and survey log, kept in this browser's localStorage. */
+/**
+ * Booth settings and survey log, kept in this browser's localStorage and kept in
+ * step across the kiosk, monitor and staff windows open in the same browser.
+ */
 export function useSettings() {
   const [st, setSt] = useState<Settings>(DEFAULT_SETTINGS);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(KEY);
+      const saved = localStorage.getItem(SETTINGS_KEY);
       if (saved) setSt(sanitize(JSON.parse(saved)));
     } catch {
       /* storage unavailable: run with defaults */
     }
     setLoaded(true);
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== SETTINGS_KEY || !e.newValue) return;
+      try {
+        setSt(sanitize(JSON.parse(e.newValue)));
+      } catch {
+        /* ignore */
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   useEffect(() => {
     if (!loaded) return;
     try {
-      localStorage.setItem(KEY, JSON.stringify(st));
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(st));
     } catch {
       /* ignore */
     }

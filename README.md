@@ -13,23 +13,58 @@ IT Connect Fes 2026 のブース体験「AIおみくじ」。Next.js（App Route
 APIキーはサーバーだけで使い、ブラウザには出しません。ページから送るのは選択肢だけで、指示文はサーバー側で作るので、キーをおみくじ以外に使われることはありません。
 APIキーがない・AIが失敗したときは、用意したテンプレート文で動きます。
 
+## 画面
+
+| URL | 使う場所 | 内容 |
+|---|---|---|
+| `/kiosk` | 来場者のタッチパネル（横向き・全画面） | スタート → あなたについて → AIの利用 → 引き出し → 演出 → 結果（自動で最初にもどる） |
+| `/monitor` | ブース後方のテレビ | 裏側モニター。キオスクの動きがリアルタイムで映る。体験人数・当たり残り・AI利用率も表示 |
+| `/staff` | スタッフ用（PIN） | 当たりの数・効果音・自動印刷・裏面のコツ・部署・アンケート集計 |
+| `/` | — | 3つの画面へのリンク |
+
+キオスクとモニターは **同じパソコンの同じブラウザ** で別ウィンドウとして開くと自動で連動します（BroadcastChannel）。
+設定・カウント・アンケートもそのブラウザに保存され、3つの画面で共有されます。
+
+### 演出の動画（Seedance など）
+
+`public/media/` に次の名前で置くと自動で使われます。なければ内蔵のアニメーションで動きます。
+
+| ファイル | 使う場面 |
+|---|---|
+| `idle.mp4` | スタート画面の背景（ループ・無音） |
+| `reveal-daidaikichi.mp4` | 大大吉が出たとき |
+| `reveal-daikichi.mp4` | 大吉が出たとき |
+| `reveal-chukichi.mp4` | 中吉が出たとき |
+
+`public/media/titles/` には、動画づくりの参考用に 3D 文字の画像（大大吉・大吉・中吉）が入っています。
+
+### 印刷（80mm サーマルプリンター）
+
+スタッフ設定で「結果画面で自動印刷する」をオンにし、Chrome を次のように起動すると、印刷ダイアログなしで既定のプリンターに出ます。
+
+```bash
+# Windows の例
+chrome.exe --kiosk --kiosk-printing https://<your-app>.vercel.app/kiosk
+```
+
 ## 構成
 
 ```
 app/
-  layout.tsx           フォント・メタ情報
-  page.tsx
-  globals.css          デザイン
-  api/omikuji/route.ts Claude 呼び出し（GET: AI接続状態 / POST: おみくじ生成）
+  page.tsx               3画面へのリンク
+  kiosk/ monitor/ staff/ 各画面
+  api/omikuji/route.ts   Claude 呼び出し（GET: AI接続状態 / POST: おみくじ生成）
+  api/staff/route.ts     スタッフPINの確認
 components/
-  OmikujiApp.tsx       画面全体と流れ
-  Cabinet.tsx          御神籤の棚（引き出し 一〜百）
-  Slip.tsx             おみくじの紙（表・裏）
-  Monitor.tsx          裏側モニター
-  StaffPanel.tsx       スタッフ設定・アンケート集計
+  kiosk/KioskApp.tsx     キオスクの流れ
+  monitor/MonitorApp.tsx 裏側モニター
+  staff/StaffApp.tsx     スタッフ画面
+  Cabinet / Slip / Reveal / FortuneArt / Art / StaffPanel
 lib/
-  omikuji.ts           抽選・指示文・チェック・コツ（画面とサーバーで共通）
-  useSettings.ts       設定と記録（ブラウザの localStorage）
+  omikuji.ts             抽選・指示文・チェック・コツ（画面とサーバーで共通）
+  booth.ts               キオスク → モニターの連動
+  sound.ts               効果音（音声ファイル不要）
+  useSettings.ts         設定と記録（localStorage、ウィンドウ間で同期）
 ```
 
 ## ローカルで動かす
@@ -43,12 +78,15 @@ npm run dev                  # http://localhost:3000
 ## Vercel にデプロイ
 
 1. Vercel で「Add New → Project」からこのリポジトリを選ぶ（Framework: Next.js は自動判定）
-2. Environment Variables に `ANTHROPIC_API_KEY` を追加（任意で `ANTHROPIC_MODEL`、既定は `claude-haiku-5-5`）
+2. Environment Variables を追加
+   - `ANTHROPIC_API_KEY`（なければテンプレート文で動作）
+   - `STAFF_PIN`（スタッフ画面のPIN。既定は 1234 なので必ず変更）
+   - 任意：`ANTHROPIC_MODEL`（既定 `claude-haiku-5-5`）、`NEXT_PUBLIC_GUIDE_URL`（裏面・印刷にQRコードを出すURL）
 3. Deploy
 
 ## スタッフ設定
 
-ページ下部の「スタッフ設定」で変更できます（その端末のブラウザに保存）。
+`/staff` で変更できます（その端末のブラウザに保存）。
 
 - 想定来場者・マグカップ数（当たり確率 ＝ 残りのマグカップ ÷ 残りの想定来場者）
 - 裏面に載せるAIのコツ（15個から選択、ランダム／固定）

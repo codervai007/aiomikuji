@@ -7,6 +7,13 @@ export const FORTUNES: [string, number][] = [
 ];
 export const FORTUNE_NAMES = FORTUNES.map(([f]) => f);
 
+/** File-name slug, furigana and slip colour per fortune. */
+export const FORTUNE_INFO: Record<string, { slug: string; reading: string; color: string }> = {
+  大大吉: { slug: "daidaikichi", reading: "だいだいきち", color: "#f5cb32" },
+  大吉: { slug: "daikichi", reading: "だいきち", color: "#f6c68b" },
+  中吉: { slug: "chukichi", reading: "ちゅうきち", color: "#86efac" },
+};
+
 export const GENDERS = ["女性", "男性", "その他", "回答しない"] as const;
 export const AGES = ["10代", "20代", "30代", "40代", "50代", "60代以上"] as const;
 export const AI_USE = ["毎日使っている", "ときどき使う", "試したことがある", "使ったことがない"] as const;

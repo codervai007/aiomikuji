@@ -4,7 +4,7 @@ import { AI_USE_COLS, DEFAULT_DEPTS, TIPS } from "@/lib/omikuji";
 import type { Settings } from "@/lib/useSettings";
 
 /** Staff-only settings: win odds, tips on the back, department list and the survey tally. */
-export function StaffPanel({ st, setSt }: { st: Settings; setSt: Dispatch<SetStateAction<Settings>> }) {
+export function StaffPanel({ st, setSt, open = false }: { st: Settings; setSt: Dispatch<SetStateAction<Settings>>; open?: boolean }) {
   const [armed, setArmed] = useState(false);
   const [deptDraft, setDeptDraft] = useState(st.depts.join("\n"));
   const [copyMsg, setCopyMsg] = useState("");
@@ -49,11 +49,8 @@ export function StaffPanel({ st, setSt }: { st: Settings; setSt: Dispatch<SetSta
   const toggleTip = (i: number, on: boolean) =>
     setSt((s) => ({ ...s, tips: (on ? [...new Set([...s.tips, i])] : s.tips.filter((x) => x !== i)).sort((a, b) => a - b) }));
 
-  return (
-    <section className="band">
-      <div className="wrap">
-        <details className="staff">
-          <summary>スタッフ設定（当たりの出方・裏面のコツ・アンケート）</summary>
+  const content = (
+    <>
           <p className="small">当たり確率 ＝ 残りのマグカップ ÷ 残りの想定来場者。1日を通して均等に当たりが出ます。設定はこの端末だけに保存されます。</p>
           <div className="srow">
             <label>
@@ -166,6 +163,16 @@ export function StaffPanel({ st, setSt }: { st: Settings; setSt: Dispatch<SetSta
           </div>
           {csvShown && <textarea rows={6} readOnly value={csvShown} aria-label="CSV" />}
           <p className="small">記録するのは時刻・部署・AIの利用・運勢・当たりだけです（性別・年齢は記録しません）。</p>
+    </>
+  );
+
+  if (open) return <section className="staff open">{content}</section>;
+  return (
+    <section className="band">
+      <div className="wrap">
+        <details className="staff">
+          <summary>スタッフ設定（当たりの出方・裏面のコツ・アンケート）</summary>
+          {content}
         </details>
       </div>
     </section>
