@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIおみくじブース デモ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a real shrine omikuji stand set up in an office hall — calm, crafted, festive
+   IDEA: a small shrine: roof, gold 御神籤 plate, 100 wooden drawers; the paper slip hands out beside it
+   PICTURE: the shrine cabinet + the vertical slip with a red seal; seigaiha waves in the sumi header
+   COLOUR and TYPE: sumi, shrine vermilion, wood, gold leaf, white paper; Shippori Mincho B1 + Zen Kaku Gothic New
+   LAYOUT: sumi header; paper form card (一・二・三) | sticky slip; booth monitor band; staff panel */
+:root{color-scheme:light dark;--bg:light-dark(#f4f0ea,#120f0d);--card:light-dark(#fff,#1e1916);--ink:light-dark(#1d1a18,#efe8e0);--mute:light-dark(#71675f,#ab9f96);--ver:#c8372d;--line:light-dark(#e6dfd6,#3a322d);--wood:#6a4429;--gold:#d9b46a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Zen Kaku Gothic New",system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(20px,3.5vw,44px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.hero{background:#1d1a18 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24'%3E%3Cg fill='none' stroke='rgba(255,255,255,.07)' stroke-width='1.3'%3E%3Cpath d='M0 24a24 24 0 0 1 48 0M7 24a17 17 0 0 1 34 0M14 24a10 10 0 0 1 20 0M-24 12a24 24 0 0 1 48 0M-17 12a17 17 0 0 1 34 0M-10 12a10 10 0 0 1 20 0M24 12a24 24 0 0 1 48 0M31 12a17 17 0 0 1 34 0M38 12a10 10 0 0 1 20 0'/%3E%3C/g%3E%3C/svg%3E");color:#f6efe6;border-bottom:6px solid var(--ver)}
+.herow{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end;justify-content:space-between}
+.kicker{margin:0 0 8px;font-size:14px;color:#c9bcb0}
+h1{font:800 clamp(38px,6vw,64px)/1.02 "Shippori Mincho B1",serif;margin:0;letter-spacing:.02em}
+h1 span{color:var(--gold)}
+.sub{margin:10px 0 0;font-size:17px;color:#e3d8cc}
+.mugs{text-align:right;border-left:1px solid rgba(255,255,255,.18);padding-left:28px}
+.mugs p{margin:0;color:#c9bcb0;font-size:14px}
+.mugs .mn{display:flex;align-items:baseline;justify-content:flex-end;gap:8px;margin:2px 0}
+.mugs .mn b{font:800 clamp(44px,6vw,64px)/1 "Shippori Mincho B1",serif;color:var(--gold);font-variant-numeric:tabular-nums}
+.mugs .mn span{font-size:16px;color:#e3d8cc}
+.stage{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:clamp(20px,3vw,40px);align-items:start}
+.form{background:var(--card);border-radius:16px;box-shadow:0 1px 2px #0000000d,0 20px 40px -28px #0000004d;padding:clamp(18px,2.6vw,32px)}
+.blk+.blk{border-top:1px dashed var(--line);margin-top:24px;padding-top:24px}
+.blk h2{display:flex;align-items:center;gap:12px;font:800 21px/1.3 "Shippori Mincho B1",serif;margin:0 0 14px}
+.num{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--ver);color:#fff;font:800 17px "Shippori Mincho B1",serif}
+.fields{display:flex;flex-wrap:wrap;gap:14px 22px}
+.q{font-weight:700;font-size:14px;margin:0 0 6px;color:var(--mute)}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0}
+.seg span{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:1.5px solid var(--line);border-radius:999px;cursor:pointer;font-size:15px;font-weight:500;background:var(--card);transition:border-color .15s,background .15s}
+.seg label:hover span{border-color:var(--ink)}
+.seg input:checked+span{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.seg input:focus-visible+span,button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--ver);outline-offset:2px}
+select,.staff input[type=number]{font:inherit;font-size:16px;min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+select{appearance:none;padding-right:40px;min-width:160px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23c8372d' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+select:hover{border-color:var(--ink)}
+.shrine{max-width:640px;margin:4px auto 0}
+.roof{display:block;width:100%;height:58px}
+.body{background:linear-gradient(90deg,#5a3822,var(--wood) 8%,var(--wood) 92%,#5a3822);padding:10px 14px 14px;box-shadow:inset 0 0 0 3px #4a2e1b}
+.plate{width:fit-content;margin:0 auto 12px;padding:4px 22px;background:#1d1a18;color:var(--gold);border:2px solid #b8913f;box-shadow:inset 0 0 0 3px #1d1a18,inset 0 0 0 4px #8a6a2c;font:800 22px/1.3 "Shippori Mincho B1",serif;letter-spacing:.35em;text-indent:.35em}
+.cab{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}
+.base{height:14px;margin:0 -10px;background:linear-gradient(#3e2717,#2a1a0f);border-radius:0 0 6px 6px;box-shadow:0 18px 24px -16px #000a}
+.dr{position:relative;aspect-ratio:6/5;border:0;border-radius:2px;background:linear-gradient(#97663f,#7c4f2e);box-shadow:inset 0 1px 0 #b98a60,inset 0 -3px 0 #5e3b22;cursor:pointer;padding:6px 0 14px;display:flex;justify-content:center;align-items:flex-start;transition:transform .2s,box-shadow .2s}
+.dr .k{background:#fbf8f2;color:#1d1a18;font:600 clamp(10px,1.05vw,13px)/1 "Shippori Mincho B1",serif;padding:3px 4px;white-space:nowrap;letter-spacing:-.04em;box-shadow:0 1px 0 #0003}
+.dr .a{display:none;color:#fbf8f2;font-size:12px;font-variant-numeric:tabular-nums}
+.dr i{position:absolute;bottom:5px;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f6dc9c,#9b7430)}
+.dr:hover{transform:translateY(-1px);filter:brightness(1.07)}
+.dr[aria-pressed=true]{transform:translateY(-4px) scale(1.08);box-shadow:inset 0 1px 0 #b98a60,0 8px 10px -2px #000a;z-index:1}
+.dr[aria-pressed=true] .k{background:var(--ver);color:#fff}
+.dr[aria-pressed=true] .a{color:#ffd2cd;font-weight:700}
+.dr.open{animation:pull .7s ease-in-out}
+@keyframes pull{40%{transform:translateY(-4px) scale(1.25)}100%{transform:translateY(-4px) scale(1.08)}}
+.act{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:24px}
+.go{min-height:58px;padding:0 34px;border:0;border-radius:12px;background:linear-gradient(#d9473c,#b72e25);color:#fff;font:900 20px "Zen Kaku Gothic New",sans-serif;letter-spacing:.06em;cursor:pointer;box-shadow:0 4px 0 #7d1f19,0 14px 24px -10px #c8372d99;transition:transform .1s,box-shadow .1s}
+.go:active{transform:translateY(3px);box-shadow:0 1px 0 #7d1f19,0 6px 12px -8px #c8372d99}
+.go:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.ghost{min-height:44px;padding:0 18px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:inherit;font-size:15px;font-weight:500;cursor:pointer}
+.ghost:hover{border-color:var(--ink)}
+.pick{font-size:15px;color:var(--mute)}
+.pick b{font:800 26px "Shippori Mincho B1",serif;color:var(--ver)}
+.note{font-size:13px;color:var(--mute);margin:12px 0 0}
+.slipcol{position:sticky;top:20px}
+.sides{display:flex;width:fit-content;margin:0 auto 14px;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:3px}
+.sides button{min-height:40px;padding:0 18px;border:0;border-radius:999px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.sides button[aria-pressed=true]{background:var(--ink);color:var(--card)}
+.slip{background:#fffdf8;color:#1d1a18;width:min(100%,360px);height:580px;padding:14px;position:relative;box-shadow:0 1px 2px #0002,0 26px 40px -24px #0008;margin-inline:auto;transform:rotate(-1deg)}
+.frame{height:100%;width:100%;border:2px solid var(--ver);box-shadow:inset 0 0 0 4px #fffdf8,inset 0 0 0 5px var(--ver);padding:20px 16px;writing-mode:vertical-rl;font-family:"Shippori Mincho B1",serif;overflow:hidden}
+.frame .t{font-size:14px;margin:0;color:#71675f}
+.frame .no{font-size:20px;font-weight:800;margin:0 0 0 10px}
+.frame .luck{inline-size:fit-content;font-size:58px;font-weight:800;line-height:1;color:var(--ver);margin:0 6px 0 14px;padding:10px 4px;border-block:2px solid var(--ver)}
+.frame .it{margin:0 0 0 6px;font-size:16px;line-height:1.95}
+.frame .it b{color:var(--ver);margin-bottom:.4em;display:inline-block}
+.frame.empty{display:flex;align-items:center;justify-content:center;color:#a0958b;font-size:17px}
+.seal{position:absolute;left:24px;bottom:26px;width:84px;height:84px;border:3px solid var(--ver);border-radius:4px;color:var(--ver);display:grid;place-content:center;text-align:center;transform:rotate(-8deg);font:800 30px/1 "Shippori Mincho B1",serif;background:#c8372d0d;box-shadow:inset 0 0 0 3px #fffdf8,inset 0 0 0 4px var(--ver)}
+.seal small{font:700 11px/1.6 "Zen Kaku Gothic New",sans-serif}
+.back{height:580px;overflow:auto;font-size:13px;line-height:1.6;padding:24px}
+.back h3{font:800 15px "Shippori Mincho B1",serif;margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid #1d1a18}
+.back pre{white-space:pre-wrap;margin:0 0 16px;background:#f4efe8;padding:10px;font:12px/1.55 "Zen Kaku Gothic New",sans-serif}
+.back ol{margin:0 0 16px;padding-left:1.3em}
+.back .foot{border-top:1px dashed #9a8f86;padding-top:8px;font-size:12px;margin:0}
+.slipnote{font-size:13px;color:var(--mute);text-align:center;margin:18px 0 0}
+.mon{background:#1d1a18;color:#efe8e0}
+:root[data-theme=dark] .mon{background:#0b0908}
+.mon h2{font:800 28px "Shippori Mincho B1",serif;margin:0}
+.monhd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:26px}
+.mode{font-size:14px;color:#ab9f96;margin:0;padding:4px 12px;border:1px solid #3a322d;border-radius:999px}
+.flow{list-style:none;margin:0 0 28px;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.flow li{position:relative;text-align:center;padding:0 6px}
+.flow li::before{content:"";position:absolute;top:21px;left:-50%;width:100%;height:2px;background:#4a403a}
+.flow li:first-child::before{display:none}
+.flow li[data-s=done]::before,.flow li[data-s=run]::before,.flow li[data-s=warn]::before{background:var(--ver)}
+.node{position:relative;display:grid;place-items:center;width:44px;height:44px;margin:0 auto 8px;border-radius:50%;border:2px solid #4a403a;background:#1d1a18;font-weight:900}
+.flow li[data-s=run] .node{border-color:var(--ver);color:#fff;background:var(--ver)}
+.flow li[data-s=done] .node{border-color:var(--ver);color:var(--ver)}
+.flow li[data-s=warn] .node{border-color:#e0a32e;color:#e0a32e}
+.flow .who{display:block;font-size:12px;color:#ab9f96}
+.flow .lb{display:block;font-size:14px;font-weight:700}
+.flow em{display:block;font-style:normal;font-size:13px;color:#ff8c80;min-height:1.6em}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.pair>div{background:#262019;border-radius:12px;padding:16px 18px}
+:root[data-theme=dark] .pair>div{background:#17120f}
+.pair h3{font-size:14px;color:#ff8c80;margin:0 0 8px}
+.pair pre{margin:0;white-space:pre-wrap;word-break:break-word;font:15px/1.75 "Zen Kaku Gothic New",sans-serif;min-height:8em}
+.checks{font-size:14px;color:#ab9f96;margin:10px 0 0}
+.staff{background:var(--card);border-radius:16px;padding:6px 22px 18px}
+.staff summary{cursor:pointer;font-weight:700;min-height:48px;display:flex;align-items:center}
+.srow{display:flex;flex-wrap:wrap;gap:16px;align-items:end;margin-top:8px}
+.srow label{display:grid;gap:4px;font-size:14px}
+.staff input[type=number]{width:130px}
+.small{font-size:14px;color:var(--mute)}
+.staff h3{font:800 18px "Shippori Mincho B1",serif;margin:30px 0 4px}
+.tips{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:6px}
+.tips label{display:flex;gap:10px;align-items:center;min-height:44px;padding:6px 12px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;font-size:15px}
+.tips input{width:20px;height:20px;accent-color:var(--ver);flex:none}
+.tips label:has(input:checked){border-color:var(--ink)}
+.warn{color:var(--ver);font-weight:700;font-size:14px}
+.staff textarea{width:min(100%,520px);font:16px/1.6 "Zen Kaku Gothic New",sans-serif;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);margin-top:6px}
+.scroll{overflow-x:auto}
+.tally{border-collapse:collapse;font-size:14px;margin-top:8px}
+.tally th,.tally td{border-bottom:1px solid var(--line);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tally th:first-child,.tally td:first-child{text-align:left}
+.tally tr:last-child td{font-weight:700;border-bottom:2px solid var(--ink)}
+@media(max-width:940px){.stage{grid-template-columns:minmax(0,1fr)}.slipcol{position:static}}
+@media(max-width:640px){.dr .k{display:none}.dr .a{display:block}.dr{aspect-ratio:3/4;padding-top:4px}.cab{gap:3px}.body{padding:8px 8px 10px}.roof{height:40px}.plate{font-size:18px}
+  .seg span{padding:0 14px}.mugs{text-align:left;border-left:0;padding-left:0}.mugs .mn{justify-content:flex-start}.dr[aria-pressed=true]{background:linear-gradient(#d9473c,#b72e25)}.dr[aria-pressed=true] .a{color:#fff}
+  .flow{grid-template-columns:minmax(0,1fr);gap:4px}.flow li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:0 12px;text-align:left;align-items:center}
+  .flow li::before{top:-14px;left:21px;width:2px;height:18px}.node{margin:0;grid-row:span 2}.flow em{grid-column:2;min-height:0}
+  .pair{grid-template-columns:minmax(0,1fr)}.slip,.back{height:540px}.slip{transform:none}}
+@media(prefers-reduced-motion:reduce){.dr,.dr.open,.go{animation:none;transition:none}}
+</style>
+</head>
+<body>
+
+<header class="hero"><div class="wrap band herow">
+  <div>
+    <p class="kicker">IT Connect Fes 2026 ・ IT統括部 アプリケーションサポート</p>
+    <h1><span>AI</span>おみくじ</h1>
+    <p class="sub">AIがその場で書く、あなただけのおみくじ。</p>
+  </div>
+  <div class="mugs" id="mugs" aria-live="polite"></div>
+</div></header>
+
+<main class="band"><div class="wrap stage">
+  <section class="form" aria-label="おみくじを引く">
+    <div class="blk">
+      <h2><span class="num">一</span>あなたについて</h2>
+      <div class="fields">
+        <div><p class="q">性別</p><div class="seg">
+          <label><input type="radio" name="g" value="女性"><span>女性</span></label>
+          <label><input type="radio" name="g" value="男性"><span>男性</span></label>
+          <label><input type="radio" name="g" value="その他"><span>その他</span></label>
+          <label><input type="radio" name="g" value="回答しない" checked><span>回答しない</span></label>
+        </div></div>
+        <div><p class="q"><label for="age">年齢（任意）</label></p>
+          <select id="age"><option value="">空欄のまま</option><option>10代</option><option>20代</option><option>30代</option><option>40代</option><option>50代</option><option>60代以上</option></select></div>
+        <div><p class="q"><label for="dept">部署</label></p><select id="dept"></select></div>
+      </div>
+      <p class="note">名前など、個人を特定する情報は入力しません。</p>
+    </div>
+    <div class="blk">
+      <h2><span class="num">二</span>お仕事でAIを使っていますか？</h2>
+      <div class="seg">
+        <label><input type="radio" name="ai" value="毎日使っている"><span>毎日使っている</span></label>
+        <label><input type="radio" name="ai" value="ときどき使う"><span>ときどき使う</span></label>
+        <label><input type="radio" name="ai" value="試したことがある"><span>試したことがある</span></label>
+        <label><input type="radio" name="ai" value="使ったことがない"><span>使ったことがない</span></label>
+      </div>
+    </div>
+    <div class="blk">
+      <h2><span class="num">三</span>引き出しを選ぶ</h2>
+      <div class="shrine">
+        <svg class="roof" viewBox="0 0 600 58" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 52 Q70 48 110 28 L300 4 L490 28 Q530 48 600 52 L600 58 L0 58Z" fill="#2a211d"/>
+          <path d="M110 28 L300 4 L490 28" fill="none" stroke="#d9b46a" stroke-width="3"/>
+          <rect x="0" y="52" width="600" height="6" fill="#d9b46a"/>
+        </svg>
+        <div class="body"><div class="plate">御神籤</div><div class="cab" id="drawers" role="group" aria-label="引き出し 1〜100"></div></div>
+        <div class="base"></div>
+      </div>
+      <div class="act">
+        <button class="go" id="go" disabled>おみくじを引く</button>
+        <button class="ghost" id="any">おまかせで選ぶ</button>
+        <span class="pick" id="pick">引き出しをひとつ選んでください</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="slipcol" aria-label="おみくじ">
+    <div class="sides"><button id="sF" aria-pressed="true">表</button><button id="sB" aria-pressed="false">裏 ・ AIミニ解説</button></div>
+    <div id="slip"><div class="slip"><div class="frame empty">引き出しを選んで、おみくじを引いてください</div></div></div>
+    <p class="slipnote">当日はブースのサーマルプリンターで印刷してお渡しします</p>
+  </section>
+</div></main>
+
+<section class="mon band" aria-labelledby="m"><div class="wrap">
+  <div class="monhd"><h2 id="m">裏側モニター</h2><p class="mode" id="mode">生成AIに接続中…</p></div>
+  <ol class="flow" id="pipe">
+    <li data-s="idle"><span class="node">1</span><span class="who">来場者</span><span class="lb">入力する</span><em></em></li>
+    <li data-s="idle"><span class="node">2</span><span class="who">プログラム</span><span class="lb">運勢・当たりを抽選</span><em></em></li>
+    <li data-s="idle"><span class="node">3</span><span class="who">プログラム</span><span class="lb">指示文を組み立てる</span><em></em></li>
+    <li data-s="idle"><span class="node">4</span><span class="who">生成AI</span><span class="lb">文章を書く</span><em></em></li>
+    <li data-s="idle"><span class="node">5</span><span class="who">プログラム</span><span class="lb">確認して印刷</span><em></em></li>
+  </ol>
+  <div class="pair">
+    <div><h3>① プログラムが作る指示文</h3><pre id="prompt">まだ引かれていません</pre></div>
+    <div><h3>② 生成AIの答え</h3><pre id="answer">—</pre><p class="checks" id="checks"></p></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <details class="staff"><summary>スタッフ設定（当たりの出方・裏面のコツ）</summary>
+    <p class="small">当たり確率 ＝ 残りのマグカップ ÷ 残りの想定来場者。1日を通して均等に当たりが出ます。設定はこの端末だけに保存されます。</p>
+    <div class="srow">
+      <label>想定来場者<input type="number" id="exp" min="1" value="200"></label>
+      <label>マグカップ数<input type="number" id="mugN" min="0" value="10"></label>
+      <button class="ghost" id="reset">カウントと記録をリセット</button>
+      <span class="small" id="prob"></span>
+    </div>
+    <h3>裏面に載せるAIのコツ</h3>
+    <p class="small">チェックしたコツの中から、1枚につき3つを裏面に印刷します。</p>
+    <div class="srow">
+      <label>選び方<select id="tipMode"><option value="random">ランダム（毎回ちがう3つ）</option><option value="fixed">固定（チェックした上から3つ）</option></select></label>
+      <button class="ghost" id="tipAll" type="button">すべて選ぶ</button>
+      <button class="ghost" id="tipBasic" type="button">基本の3つだけ</button>
+      <span id="tipCount"></span>
+    </div>
+    <ul class="tips" id="tips"></ul>
+    <h3>部署リスト</h3>
+    <p class="small">1行に1部署。ここを書き換えるとプルダウンに反映されます（「回答しない」は自動で付きます）。</p>
+    <textarea id="deptList" rows="8" aria-label="部署リスト"></textarea>
+    <h3>アンケート集計（AIの利用 × 部署）</h3>
+    <p class="small" id="aiRate"></p>
+    <div class="scroll"><table class="tally" id="tally"></table></div>
+    <div class="srow"><button class="ghost" id="copyCsv" type="button">CSVをコピー</button><span class="small" id="copyMsg"></span></div>
+    <textarea id="csvOut" rows="6" readonly hidden aria-label="CSV"></textarea>
+    <p class="small">記録するのは時刻・部署・AIの利用・運勢・当たりだけです（性別・年齢は記録しません）。</p>
+  </details>
+</div></section>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rnd=()=>crypto.getRandomValues(new Uint32Array(1))[0]/4294967296;
+const K='〇一二三四五六七八九';
+const kan=n=>n===100?'百':(n>=20?K[Math.floor(n/10)]:'')+(n>=10?'十':'')+(n%10?K[n%10]:'');
+const FORTUNES=[['大大吉',3],['大吉',17],['中吉',22],['吉',25],['小吉',18],['末吉',15]];
+const NG=['死','病','不幸','事故','最悪','災','呪','失敗する'];
+const KEY='omikuji-demo-v2';
+const TIPS=[
+  '個人情報・社外秘は入力しない',
+  'AIの答えは必ず人が確認する',
+  '指示は具体的に（誰に・何を・何字で）',
+  '目的や前提を最初に伝える',
+  '役割を与える（例：「あなたは総務の担当者です」）',
+  '出力の形を指定する（箇条書き・表・3行で など）',
+  'お手本の例文を1つ見せると近い形で返ってくる',
+  '一度で終わらせず「もっと短く」などと直してもらう',
+  '数字・日付・固有名詞は元の資料で確かめる',
+  '分からないときは「分からない」と答えてよいと伝える',
+  '長い資料は「要点を3つ」のようにまとめ方を指定する',
+  '会社で認められたAIツールを使う',
+  'AIの答えをそのまま社外に出さない',
+  '間違いはどこが違うかを伝えて直してもらう',
+  'まずは下書きやアイデア出しから使ってみる'
+];
+const DEPTS=['総務','人事','経理・財務','営業','工事・現場','設計','購買・調達','IT統括部','その他'];
+const AIUSE=['毎日使っている','ときどき使う','試したことがある','使ったことがない','未回答'];
+let st={expected:200,mugs:10,drawn:0,won:0,tips:TIPS.map((_,i)=>i),tipMode:'random',depts:DEPTS,log:[]};
+try{Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+let pickNo=null,busy=false,sample=null,side='front',last=null;
+
+$('drawers').innerHTML=Array.from({length:100},(_,i)=>`<button type="button" class="dr" aria-pressed="false" aria-label="${i+1}番" data-n="${i+1}"><span class="k">${kan(i+1)}</span><span class="a">${i+1}</span><i></i></button>`).join('');
+const choose=n=>{pickNo=n;for(const b of $('drawers').children)b.setAttribute('aria-pressed',String(+b.dataset.n===n));$('pick').innerHTML=`第<b>${kan(n)}</b>番`;$('go').disabled=busy};
+$('drawers').addEventListener('click',e=>{const b=e.target.closest('button');if(b)choose(+b.dataset.n)});
+$('any').addEventListener('click',()=>choose(1+Math.floor(rnd()*100)));
+
+function renderStock(){
+  const left=Math.max(0,st.mugs-st.won);
+  $('mugs').innerHTML=`<p class="ml">当たりのマグカップ</p><p class="mn"><b>${left}</b><span>/ ${st.mugs}個</span></p><p class="md">${st.drawn}人が体験</p>`;
+  $('exp').value=st.expected;$('mugN').value=st.mugs;
+  const p=left/Math.max(1,st.expected-st.drawn);
+  $('prob').textContent=`次の1枚の当たり確率：${(Math.min(1,p)*100).toFixed(1)}%`;
+}
+renderStock();
+$('exp').addEventListener('change',e=>{st.expected=Math.max(1,+e.target.value||200);save();renderStock()});
+$('mugN').addEventListener('change',e=>{st.mugs=Math.min(50,Math.max(0,+e.target.value||0));save();renderStock()});
+let armed=false;
+$('reset').addEventListener('click',()=>{
+  if(!armed){armed=true;$('reset').textContent='もう一度押すとリセット';setTimeout(()=>{armed=false;$('reset').textContent='カウントをリセット'},3000);return}
+  st.drawn=0;st.won=0;st.log=[];save();renderStock();renderTally();armed=false;$('reset').textContent='カウントと記録をリセット';
+});
+
+if(!Array.isArray(st.depts)||!st.depts.length)st.depts=DEPTS;
+st.depts=st.depts.map(String).slice(0,40);
+if(!Array.isArray(st.log))st.log=[];
+function renderDepts(){
+  const cur=$('dept').value;
+  $('dept').innerHTML='<option value="">回答しない</option>'+st.depts.map(d=>`<option>${esc(d)}</option>`).join('');
+  if(st.depts.includes(cur))$('dept').value=cur;
+  $('deptList').value=st.depts.join('\n');
+}
+renderDepts();
+$('deptList').addEventListener('change',e=>{
+  const l=[...new Set(e.target.value.split('\n').map(s=>s.trim()).filter(Boolean))].slice(0,40);
+  st.depts=l.length?l:DEPTS;save();renderDepts();renderTally();
+});
+function renderTally(){
+  const rows=[...new Set([...st.depts,...st.log.map(r=>r.dept)])];
+  if(!rows.includes('回答しない'))rows.push('回答しない');
+  const cnt=(d,a)=>st.log.filter(r=>(d==null||r.dept===d)&&(a==null||r.ai===a)).length;
+  const used=cnt(null,'毎日使っている')+cnt(null,'ときどき使う'),ans=st.log.length-cnt(null,'未回答');
+  $('aiRate').textContent=st.log.length?`回答 ${ans}人のうち、業務でAIを使っている（毎日＋ときどき）：${used}人（${ans?Math.round(used/ans*100):0}%）`:'まだ記録がありません';
+  $('tally').innerHTML=`<tr><th>部署</th>${AIUSE.map(a=>`<th>${a}</th>`).join('')}<th>計</th></tr>`+
+    rows.filter(d=>cnt(d,null)||st.depts.includes(d)).map(d=>`<tr><td>${esc(d)}</td>${AIUSE.map(a=>`<td>${cnt(d,a)}</td>`).join('')}<td>${cnt(d,null)}</td></tr>`).join('')+
+    `<tr><td>合計</td>${AIUSE.map(a=>`<td>${cnt(null,a)}</td>`).join('')}<td>${st.log.length}</td></tr>`;
+}
+renderTally();
+const csv=()=>'時刻,部署,AIの利用,運勢,当たり\n'+st.log.map(r=>[new Date(r.t).toLocaleString('ja-JP'),r.dept,r.ai,r.f,r.win?'当たり':''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+$('copyCsv').addEventListener('click',()=>{
+  const t=csv();
+  const show=()=>{$('csvOut').hidden=false;$('csvOut').value=t;$('copyMsg').textContent='コピーできなかったので、下の欄から選択してコピーしてください'};
+  try{navigator.clipboard.writeText(t).then(()=>{$('copyMsg').textContent=`${st.log.length}件をコピーしました`},show)}catch(e){show()}
+});
+
+st.tips=(Array.isArray(st.tips)?st.tips:[]).filter(i=>Number.isInteger(i)&&i>=0&&i<TIPS.length);
+if(st.tipMode!=='fixed')st.tipMode='random';
+$('tips').innerHTML=TIPS.map((t,i)=>`<li><label><input type="checkbox" data-i="${i}">${esc(t)}</label></li>`).join('');
+function renderTips(){
+  for(const c of $('tips').querySelectorAll('input'))c.checked=st.tips.includes(+c.dataset.i);
+  $('tipMode').value=st.tipMode;
+  const n=st.tips.length;
+  $('tipCount').className=n<3?'warn':'small';
+  $('tipCount').textContent=n<3?`あと${3-n}つ選んでください（足りない分は基本のコツを使います）`:`${n}個から選択`;
+}
+renderTips();
+$('tips').addEventListener('change',e=>{
+  const i=+e.target.dataset.i;
+  st.tips=e.target.checked?[...new Set([...st.tips,i])]:st.tips.filter(x=>x!==i);
+  st.tips.sort((a,b)=>a-b);save();renderTips();
+});
+$('tipMode').addEventListener('change',e=>{st.tipMode=e.target.value;save();renderTips()});
+$('tipAll').addEventListener('click',()=>{st.tips=TIPS.map((_,i)=>i);save();renderTips()});
+$('tipBasic').addEventListener('click',()=>{st.tips=[0,1,2];save();renderTips()});
+function chooseTips(){
+  let pool=[...st.tips];
+  for(const b of [0,1,2])if(pool.length<3&&!pool.includes(b))pool.push(b);
+  if(st.tipMode==='fixed')return pool.slice(0,3).map(i=>TIPS[i]);
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+  return pool.slice(0,3).sort((a,b)=>a-b).map(i=>TIPS[i]);
+}
+
+const steps=[...$('pipe').children];
+const setStep=(i,s,t='')=>{steps[i].dataset.s=s;steps[i].querySelector('em').textContent=t};
+const offline=t=>{$('mode').textContent=t||'生成AI：未接続 → 用意した文章で動作中'};
+if(window.claude&&claude.use){
+  claude.use('sample').then(s=>{sample=s;s?$('mode').textContent='生成AI：接続中 ・ 毎回その場で文章を作ります':offline()}).catch(()=>offline());
+}else offline();
+
+function draw(){let r=rnd()*100;for(const [f,w] of FORTUNES){if((r-=w)<0)return f}return '吉'}
+function buildPrompt(f,age,g,dept){
+  return `あなたはおみくじ作家です。
+運勢：${f}　対象：${age||'年齢未回答'}・${g}　部署：${dept||'未回答'}
+仕事運・健康運・ひとことを、各30字以内で前向きな言葉で書いてください。${dept?'\n仕事運は、その部署の仕事に合う内容にしてください。':''}
+性別や年齢による決めつけはせず、医療的な助言はしないでください。
+出力は次の3行だけにしてください。
+仕事運：
+健康運：
+ひとこと：`;
+}
+const TPL={
+  仕事運:['積み重ねが実を結ぶとき。','小さな改善が大きな成果に。','相談した一言から道がひらける。','段取り上手が光る一日。'],
+  健康運:['朝の散歩が好調のカギ。','温かい飲み物でひと休みを。','早めの就寝で心も軽く。','深呼吸ひとつで調子が整う。'],
+  ひとこと:['迷ったら、まず一歩。','笑顔がいちばんのお守り。','今日の「ありがとう」が明日を照らす。','焦らず、着実に。']
+};
+const pickT=a=>a[Math.floor(rnd()*a.length)];
+const tplText=()=>Object.keys(TPL).map(k=>`${k}：${pickT(TPL[k])}`).join('\n');
+const KEYS=['仕事運','健康運','ひとこと'];
+function parse(t){const o={};for(const k of KEYS){const m=t.match(new RegExp('^\\s*'+k+'\\s*[:：]\\s*(.+)$','m'));if(m)o[k]=m[1].trim()}return o}
+function check(o){
+  if(KEYS.some(k=>!o[k]))return '3項目がそろっていません';
+  const long=KEYS.find(k=>[...o[k]].length>30);if(long)return `${long}が30字を超えています`;
+  const all=KEYS.map(k=>o[k]).join('');const bad=NG.find(w=>all.includes(w));if(bad)return `不適切な表現「${bad}」を検出`;
+  return '';
+}
+
+$('go').addEventListener('click',async()=>{
+  if(busy||pickNo==null)return;
+  busy=true;$('go').disabled=true;
+  const dr=$('drawers').children[pickNo-1];dr.classList.remove('open');void dr.offsetWidth;dr.classList.add('open');
+  steps.forEach((_,i)=>setStep(i,'idle'));$('checks').textContent='';$('answer').textContent='—';
+  const g=(document.querySelector('input[name=g]:checked')||{}).value||'回答しない';
+  const age=$('age').value,dept=$('dept').value;
+  const ai=(document.querySelector('input[name=ai]:checked')||{}).value||'未回答';
+  setStep(0,'done',`第${kan(pickNo)}番 ・ ${dept||'部署未回答'}`);
+  const f=draw();
+  const left=Math.max(0,st.mugs-st.won);
+  const win=left>0&&rnd()<left/Math.max(1,st.expected-st.drawn);
+  st.drawn++;if(win)st.won++;
+  st.log.push({t:Date.now(),dept:dept||'回答しない',ai,f,win});if(st.log.length>3000)st.log.shift();
+  save();renderStock();renderTally();
+  setStep(1,'done',`${f}${win?' ・ 当たり':''}`);
+  const prompt=buildPrompt(f,age,g,dept);
+  $('prompt').textContent=prompt;setStep(2,'done','差し込み完了');
+  setStep(3,'run','書いています…');
+  $('slip').innerHTML='<div class="slip"><div class="frame empty">印刷中…</div></div>';
+  let text='',src='生成AI';
+  if(sample){
+    try{text=(await sample(prompt,{modelTier:'quick',cache:false,onText:({text:t})=>{$('answer').textContent=t}})).text||''}
+    catch(e){if(e&&e.code==='not_granted'){sample=null;offline('生成AI：未許可 → 用意した文章で動作中')}text=''}
+  }
+  if(!text){text=tplText();src='用意した文章'}
+  $('answer').textContent=text;
+  setStep(3,'done',src);
+  let o=parse(text),err=check(o);
+  if(err){$('checks').textContent=`確認NG（${err}）→ 安全な文章に差し替えて印刷`;o=parse(tplText());setStep(4,'warn','差し替え')}
+  else{$('checks').textContent='確認OK：3項目そろい・各30字以内・不適切な表現なし';setStep(4,'done','印刷')}
+  last={f,o,prompt,win,no:pickNo,tips:chooseTips()};
+  side='front';renderSlip();
+  busy=false;$('go').disabled=false;
+});
+
+function renderSlip(){
+  $('sF').setAttribute('aria-pressed',String(side==='front'));$('sB').setAttribute('aria-pressed',String(side==='back'));
+  if(!last)return;
+  const {f,o,prompt,win,no,tips}=last;
+  $('slip').innerHTML=side==='front'?`
+  <article class="slip" aria-label="おみくじ 表面"><div class="frame">
+    <p class="t">AIおみくじ</p>
+    <p class="no">第${kan(no)}番</p>
+    <p class="luck">${esc(f)}</p>
+    ${KEYS.map(k=>`<p class="it"><b>${k}</b>　${esc(o[k]||'')}</p>`).join('')}
+    ${win?'<p class="it" style="color:#c8372d"><b>当たり</b>　この紙をスタッフにお見せください</p>':''}
+  </div>${win?'<div class="seal" aria-label="当たり">当選<small>マグカップ贈呈</small></div>':''}</article>`:`
+  <article class="slip back" aria-label="おみくじ 裏面">
+    <h3>あなたのおみくじを作った指示文</h3><pre>${esc(prompt)}</pre>
+    <h3>AIを仕事で使うコツ</h3><ol>${tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ol>
+    <p class="foot">相談窓口　IT統括部 アプリケーションサポート<br>業務でAIを試したいときは気軽にご相談ください</p>
+  </article>`;
+}
+$('sF').addEventListener('click',()=>{side='front';renderSlip()});
+$('sB').addEventListener('click',()=>{side='back';renderSlip()});
+}
+</script>
+</body>
+</html>
