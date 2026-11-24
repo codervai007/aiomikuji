@@ -14,6 +14,7 @@ import {
   templateText,
 } from "@/lib/omikuji";
 import { useSettings } from "@/lib/useSettings";
+import { OmikujiTube, Sparkle } from "./Art";
 import { Cabinet } from "./Cabinet";
 import { Monitor, type Step } from "./Monitor";
 import { Slip, type SlipData } from "./Slip";
@@ -81,7 +82,7 @@ export function OmikujiApp() {
 
   const left = Math.max(0, st.mugs - st.won);
   const status =
-    aiReady == null ? "生成AIに接続中…" : aiReady ? "生成AI：接続中 ・ 毎回その場で文章を作ります" : "生成AI：未接続 → 用意した文章で動作中";
+    aiReady == null ? "確認中…" : aiReady ? "生成AI 接続中" : "テンプレート文で動作中";
 
   const setStep = (i: number, s: Step["s"], t = "") => setSteps((cur) => cur.map((x, j) => (j === i ? { s, t } : x)));
 
@@ -144,116 +145,159 @@ export function OmikujiApp() {
 
   return (
     <>
-      <header className="hero">
-        <div className="wrap band herow">
-          <div>
-            <p className="kicker">IT Connect Fes 2026 ・ IT統括部 アプリケーションサポート</p>
-            <h1>
-              <span>AI</span>おみくじ
-            </h1>
-            <p className="sub">AIがその場で書く、あなただけのおみくじ。</p>
-          </div>
-          <div className="mugs" aria-live="polite">
-            <p className="ml">当たりのマグカップ</p>
-            <p className="mn">
-              <b>{left}</b>
-              <span>/ {st.mugs}個</span>
-            </p>
-            <p className="md">{st.drawn}人が体験</p>
+      <header className="top">
+        <div className="wrap toprow">
+          <a className="logo" href="#top">
+            <i>籤</i>AIおみくじ
+          </a>
+          <span className="pill">IT Connect Fes 2026</span>
+          <span className="spacer" />
+          <div className="counter" aria-live="polite">
+            <span>当たりのマグカップ</span>
+            <b>{left}</b>
+            <small>/ {st.mugs}個</small>
           </div>
         </div>
       </header>
 
-      <main className="band">
-        <div className="wrap stage">
-          <section className="form" aria-label="おみくじを引く">
-            <div className="blk">
-              <h2>
-                <span className="num">一</span>あなたについて
-              </h2>
-              <div className="fields">
-                <div>
-                  <p className="q">性別</p>
-                  <div className="seg">
-                    {GENDERS.map((g) => (
-                      <label key={g}>
-                        <input type="radio" name="g" value={g} checked={gender === g} onChange={() => setGender(g)} />
-                        <span>{g}</span>
-                      </label>
-                    ))}
+      <section className="band" id="top">
+        <div className="wrap">
+          <div className="herocard">
+            <Sparkle className="sp1" color="#e9525c" />
+            <Sparkle className="sp2" color="#86efac" />
+            <div>
+              <h1>
+                AIがその場で書く、
+                <br />
+                <em>あなただけ</em>のおみくじ
+              </h1>
+              <p className="lead">
+                運勢と当たりはプログラムが公平に抽選。文章は生成AIが一人ひとりに合わせて書きます。裏面には、AIを仕事で使うコツ付き。
+              </p>
+              <div className="cta">
+                <a className="btn primary" href="#draw">
+                  おみくじを引く
+                </a>
+                <a className="btn" href="#monitor">
+                  AIのしくみを見る
+                </a>
+              </div>
+              <ul className="chips">
+                <li>抽選は乱数で公平</li>
+                <li>AIは文章づくりだけ</li>
+                <li>個人情報は入力しない</li>
+              </ul>
+            </div>
+            <div className="heroart">
+              <Sparkle className="sp3" color="#f5cb32" />
+              <OmikujiTube />
+              <div className="statcard">
+                <b>{st.drawn}</b> 人が体験
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main className="band" id="draw" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <div className="sechd">
+            <div>
+              <h2>おみくじを引く</h2>
+              <p>3つの質問に答えて、引き出しをひとつ選んでください。</p>
+            </div>
+          </div>
+          <div className="stage">
+            <div className="steps">
+              <section className="card c1" aria-labelledby="s1">
+                <h3 id="s1">
+                  <span className="num">一</span>あなたについて
+                </h3>
+                <div className="fields">
+                  <div>
+                    <p className="q">性別</p>
+                    <div className="seg">
+                      {GENDERS.map((g) => (
+                        <label key={g}>
+                          <input type="radio" name="g" value={g} checked={gender === g} onChange={() => setGender(g)} />
+                          <span>{g}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="q">
+                      <label htmlFor="age">年齢（任意）</label>
+                    </p>
+                    <select id="age" value={age} onChange={(e) => setAge(e.target.value)}>
+                      <option value="">空欄のまま</option>
+                      {AGES.map((a) => (
+                        <option key={a}>{a}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <p className="q">
+                      <label htmlFor="dept">部署</label>
+                    </p>
+                    <select id="dept" value={dept} onChange={(e) => setDept(e.target.value)}>
+                      <option value="">回答しない</option>
+                      {st.depts.map((d) => (
+                        <option key={d}>{d}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-                <div>
-                  <p className="q">
-                    <label htmlFor="age">年齢（任意）</label>
-                  </p>
-                  <select id="age" value={age} onChange={(e) => setAge(e.target.value)}>
-                    <option value="">空欄のまま</option>
-                    {AGES.map((a) => (
-                      <option key={a}>{a}</option>
-                    ))}
-                  </select>
+                <p className="note">名前など、個人を特定する情報は入力しません。</p>
+              </section>
+
+              <section className="card c2" aria-labelledby="s2">
+                <h3 id="s2">
+                  <span className="num">二</span>お仕事でAIを使っていますか？
+                </h3>
+                <div className="seg">
+                  {AI_USE.map((a) => (
+                    <label key={a}>
+                      <input type="radio" name="ai" value={a} checked={aiUse === a} onChange={() => setAiUse(a)} />
+                      <span>{a}</span>
+                    </label>
+                  ))}
                 </div>
-                <div>
-                  <p className="q">
-                    <label htmlFor="dept">部署</label>
-                  </p>
-                  <select id="dept" value={dept} onChange={(e) => setDept(e.target.value)}>
-                    <option value="">回答しない</option>
-                    {st.depts.map((d) => (
-                      <option key={d}>{d}</option>
-                    ))}
-                  </select>
+              </section>
+
+              <section className="card c3" aria-labelledby="s3">
+                <h3 id="s3">
+                  <span className="num">三</span>引き出しを選ぶ
+                </h3>
+                <Cabinet pick={pick} onPick={setPick} pullTick={pullTick} />
+                <div className="act">
+                  <button className="btn primary go" disabled={busy || pick == null} onClick={draw}>
+                    おみくじを引く
+                  </button>
+                  <button className="btn" onClick={() => setPick(1 + Math.floor(rnd() * 100))}>
+                    おまかせで選ぶ
+                  </button>
+                  <span className="pick">
+                    {pick == null ? (
+                      "引き出しをひとつ選んでください"
+                    ) : (
+                      <>
+                        第<b>{kan(pick)}</b>番
+                      </>
+                    )}
+                  </span>
                 </div>
-              </div>
-              <p className="note">名前など、個人を特定する情報は入力しません。</p>
+              </section>
             </div>
 
-            <div className="blk">
-              <h2>
-                <span className="num">二</span>お仕事でAIを使っていますか？
-              </h2>
-              <div className="seg">
-                {AI_USE.map((a) => (
-                  <label key={a}>
-                    <input type="radio" name="ai" value={a} checked={aiUse === a} onChange={() => setAiUse(a)} />
-                    <span>{a}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="blk">
-              <h2>
-                <span className="num">三</span>引き出しを選ぶ
-              </h2>
-              <Cabinet pick={pick} onPick={setPick} pullTick={pullTick} />
-              <div className="act">
-                <button className="go" disabled={busy || pick == null} onClick={draw}>
-                  おみくじを引く
-                </button>
-                <button className="ghost" onClick={() => setPick(1 + Math.floor(rnd() * 100))}>
-                  おまかせで選ぶ
-                </button>
-                <span className="pick">
-                  {pick == null ? (
-                    "引き出しをひとつ選んでください"
-                  ) : (
-                    <>
-                      第<b>{kan(pick)}</b>番
-                    </>
-                  )}
-                </span>
-              </div>
-            </div>
-          </section>
-
-          <Slip data={slip} side={side} onSide={setSide} printing={busy} />
+            <Slip data={slip} side={side} onSide={setSide} printing={busy} />
+          </div>
         </div>
       </main>
 
-      <Monitor steps={steps} prompt={prompt} answer={answer} checks={checks} status={status} />
+      <Monitor steps={steps} prompt={prompt} answer={answer} checks={checks} status={status} online={aiReady === true} />
       <StaffPanel st={st} setSt={setSt} />
+      <p className="foot-note">IT統括部 アプリケーションサポート ・ 業務でAIを試したいときは気軽にご相談ください</p>
     </>
   );
 }

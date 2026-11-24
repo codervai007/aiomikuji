@@ -20,10 +20,9 @@ export function Cabinet({ pick, onPick, pullTick }: { pick: number | null; onPic
 
   return (
     <div className="shrine">
-      <svg className="roof" viewBox="0 0 600 58" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 52 Q70 48 110 28 L300 4 L490 28 Q530 48 600 52 L600 58 L0 58Z" fill="#2a211d" />
-        <path d="M110 28 L300 4 L490 28" fill="none" stroke="#d9b46a" strokeWidth="3" />
-        <rect x="0" y="52" width="600" height="6" fill="#d9b46a" />
+      <svg className="roof" viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M2 58 Q70 52 112 30 L300 4 L488 30 Q530 52 598 58 Z" fill="#e9525c" stroke="#111827" strokeWidth="3" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+        <path d="M150 30 L300 12 L450 30" fill="none" stroke="#fff" strokeWidth="3" vectorEffect="non-scaling-stroke" strokeLinecap="round" />
       </svg>
       <div className="body">
         <div className="plate">御神籤</div>

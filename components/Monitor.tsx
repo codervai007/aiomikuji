@@ -11,33 +11,48 @@ const STEPS = [
 ];
 
 /** The booth's second screen: shows each step, the prompt and the AI's answer. */
-export function Monitor({ steps, prompt, answer, checks, status }: { steps: Step[]; prompt: string; answer: string; checks: string; status: string }) {
+export function Monitor({ steps, prompt, answer, checks, status, online }: { steps: Step[]; prompt: string; answer: string; checks: string; status: string; online: boolean }) {
   return (
-    <section className="mon band" aria-labelledby="m">
+    <section className="mon band" id="monitor" aria-labelledby="m">
       <div className="wrap">
-        <div className="monhd">
-          <h2 id="m">裏側モニター</h2>
-          <p className="mode">{status}</p>
-        </div>
-        <ol className="flow">
-          {STEPS.map(([who, lb], i) => (
-            <li key={i} data-s={steps[i].s}>
-              <span className="node">{i + 1}</span>
-              <span className="who">{who}</span>
-              <span className="lb">{lb}</span>
-              <em>{steps[i].t}</em>
-            </li>
-          ))}
-        </ol>
-        <div className="pair">
+        <div className="sechd">
           <div>
-            <h3>① プログラムが作る指示文</h3>
-            <pre>{prompt || "まだ引かれていません"}</pre>
+            <h2 id="m">裏側モニター</h2>
+            <p>おみくじ1枚ができるまでに、AIがどこで・どう動いているか。</p>
           </div>
-          <div>
-            <h3>② 生成AIの答え</h3>
-            <pre>{answer || "—"}</pre>
-            <p className="checks">{checks}</p>
+        </div>
+        <div className="window">
+          <div className="wbar">
+            <i />
+            <i />
+            <i />
+            <span className="url">omikuji / 裏側モニター</span>
+            <span className={online ? "mode" : "mode off"}>{status}</span>
+          </div>
+          <div className="wbody">
+            <ol className="flow">
+              {STEPS.map(([who, lb], i) => (
+                <li key={i} data-s={steps[i].s}>
+                  <span className="node">{i + 1}</span>
+                  <span>
+                    <span className="who">{who}</span>
+                    <span className="lb">{lb}</span>
+                  </span>
+                  <em>{steps[i].t}</em>
+                </li>
+              ))}
+            </ol>
+            <div className="pair">
+              <div>
+                <h4>① プログラムが作る指示文</h4>
+                <pre>{prompt || "まだ引かれていません"}</pre>
+              </div>
+              <div>
+                <h4>② 生成AIの答え</h4>
+                <pre>{answer || "—"}</pre>
+                <p className="checks">{checks}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
