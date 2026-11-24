@@ -17,7 +17,7 @@ import {
 import { useSettings } from "@/lib/useSettings";
 import { EMPTY_MONITOR, IDLE_STEPS, publishMonitor, type MonitorState, type Step } from "@/lib/booth";
 import { aiAvailable, generate } from "@/lib/generate";
-import { setSoundEnabled, sfx, unlockAudio } from "@/lib/sound";
+import { audioAllowed, setSoundEnabled, sfx, startAmbient, stopAmbient, unlockAudio } from "@/lib/sound";
 import { OmikujiTube, Sparkle } from "../Art";
 import { BgVideo } from "../BgVideo";
 import { LogoImage } from "../Logo";
@@ -49,6 +49,7 @@ export function KioskApp() {
   const [idleReady, setIdleReady] = useState(false);
   // Start screen: play the intro (AI → おみくじ) once, then loop its ending and show START.
   const [idlePhase, setIdlePhase] = useState<"intro" | "loop">("intro");
+  const [soundBlocked, setSoundBlocked] = useState(false);
   const qr = useGuideQr();
   const mon = useRef<MonitorState>(EMPTY_MONITOR);
 
@@ -89,9 +90,9 @@ export function KioskApp() {
     return () => clearTimeout(t);
   }, [screen, idlePhase]);
 
-  // Intro sound: try to unmute once it plays; if the browser blocks sound it pauses the video,
-  // so go back to muted. Sound works after anyone has tapped the page once (or with Chrome's
-  // --autoplay-policy=no-user-gesture-required flag).
+  // Intro sound: unmute once it plays. Browsers block sound until someone has tapped the page
+  // (unless Chrome runs with --autoplay-policy=no-user-gesture-required); then it pauses the
+  // video, so go back to muted and show the 🔊 button.
   useEffect(() => {
     if (screen !== "idle" || idlePhase !== "intro" || !st.sound) return;
     const v = document.querySelector<HTMLVideoElement>(".idlevid");
@@ -104,8 +105,9 @@ export function KioskApp() {
         if (v.paused && !v.ended) {
           v.muted = true;
           void v.play().catch(() => {});
-        }
-      }, 120);
+          setSoundBlocked(true);
+        } else setSoundBlocked(false);
+      }, 150);
     };
     if (!v.paused) tryUnmute();
     else v.addEventListener("playing", tryUnmute, { once: true });
@@ -114,6 +116,28 @@ export function KioskApp() {
       v.removeEventListener("playing", tryUnmute);
     };
   }, [screen, idlePhase, st.sound]);
+
+  // Fire sound under the looping START video.
+  useEffect(() => {
+    if (screen === "idle" && idlePhase === "loop" && idleVideo && st.sound && !soundBlocked) void startAmbient("/media/idle-ambient.wav");
+    else stopAmbient();
+  }, [screen, idlePhase, idleVideo, st.sound, soundBlocked]);
+  useEffect(() => () => stopAmbient(), []);
+  useEffect(() => {
+    if (st.sound && !audioAllowed()) setSoundBlocked(true);
+  }, [st.sound]);
+
+  const enableSound = () => {
+    unlockAudio();
+    setSoundBlocked(false);
+    // Play the intro again from the start, now with sound.
+    const v = document.querySelector<HTMLVideoElement>(".idlevid");
+    if (idlePhase === "intro" && v) {
+      v.currentTime = 0;
+      v.muted = false;
+      void v.play().catch(() => {});
+    } else setIdlePhase("intro");
+  };
 
   // A video that failed before the page finished loading never fires onError; check it directly.
   useEffect(() => {
@@ -300,6 +324,11 @@ export function KioskApp() {
               <OmikujiTube />
             </div>
           )}
+        </button>
+      )}
+      {screen === "idle" && st.sound && soundBlocked && (
+        <button type="button" className="soundbtn" onClick={enableSound} aria-label="音を出す">
+          <span aria-hidden>🔊</span> 音を出す
         </button>
       )}
 

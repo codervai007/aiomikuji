@@ -72,3 +72,58 @@ export const sfx = {
     [1047, 1319, 1568, 2093].forEach((f) => tone(f, 0.5, 1.4, "triangle", 0.09));
   },
 };
+
+// ---------- looping ambient sound (gapless, via WebAudio) ----------
+let ambBuf: AudioBuffer | null = null;
+let ambSrc: AudioBufferSourceNode | null = null;
+let ambGain: GainNode | null = null;
+
+/** True when the browser lets this page play sound right now. */
+export function audioAllowed() {
+  const ua = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation;
+  if (ctx?.state === "running") return true;
+  if (!ctx) {
+    try {
+      ctx = new AudioContext();
+    } catch {
+      return false;
+    }
+  }
+  return ctx.state === "running" || !!ua?.hasBeenActive;
+}
+
+export async function startAmbient(url: string, volume = 0.6) {
+  if (!enabled || ambSrc) return;
+  try {
+    ctx ??= new AudioContext();
+    if (ctx.state === "suspended") await ctx.resume().catch(() => {});
+    if (ctx.state !== "running") return;
+    ambBuf ??= await fetch(url)
+      .then((r) => r.arrayBuffer())
+      .then((b) => ctx!.decodeAudioData(b));
+    if (ambSrc) return;
+    const src = ctx.createBufferSource();
+    src.buffer = ambBuf;
+    src.loop = true;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, ctx.currentTime);
+    g.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.8);
+    src.connect(g).connect(ctx.destination);
+    src.start();
+    ambSrc = src;
+    ambGain = g;
+  } catch {
+    /* no ambient sound — not important */
+  }
+}
+
+export function stopAmbient() {
+  if (!ctx || !ambSrc || !ambGain) return;
+  const src = ambSrc;
+  ambGain.gain.cancelScheduledValues(ctx.currentTime);
+  ambGain.gain.setValueAtTime(ambGain.gain.value, ctx.currentTime);
+  ambGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
+  setTimeout(() => src.stop(), 450);
+  ambSrc = null;
+  ambGain = null;
+}
