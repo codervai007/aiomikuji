@@ -529,3 +529,37 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .mresult{margin-top:12px;padding:6px 14px}
 .mart{width:clamp(52px,4vw,76px)}
 .mresult b{font-size:2em}
+
+/* ---------- background video + colorful text (dark theme) ---------- */
+.kbg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;opacity:.3;filter:blur(4px) saturate(1.3)}
+.kiosk>*:not(.kbg):not(.reveal),.monitor>*:not(.kbg){position:relative;z-index:1}
+:root[data-theme=dark]{
+  --grad:linear-gradient(100deg,#ffd76a 0%,#ff9f43 35%,#ff5e62 68%,#c56cf0 100%);
+  --g-daidaikichi:linear-gradient(180deg,#fff6c2 0%,#ffd166 45%,#f4a300 100%);
+  --g-daikichi:linear-gradient(180deg,#ffc2b8 0%,#ff6b6b 45%,#e0245e 100%);
+  --g-chukichi:linear-gradient(180deg,#c9fbe0 0%,#34d399 50%,#0ea5a4 100%);
+}
+:root[data-theme=dark] .kiosk :where(.kcard,.aitile,.picked,.kchip,.btn,.counter,.dots li,.body),
+:root[data-theme=dark] .monitor :where(.mflow,.mpair section,.mstats div,.mfoot,.mresult){background:rgba(8,8,12,.7)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+:root[data-theme=dark] .kbar{background:rgba(0,0,0,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+:root[data-theme=dark] .slip{background:#0a0a0e!important}
+/* gradient headings and numbers */
+:root[data-theme=dark] :where(.khd h2,.pickside h2,.mhd h1,.sechd h2,.herocard h1,.launchcard h3,.reslabel,.counter b,.mstats b,.picked b){background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+:root[data-theme=dark] .mhd h1 span{color:transparent;opacity:.75}
+/* chosen answers and main buttons glow in the gradient */
+:root[data-theme=dark] :where(.kchip.on,.aitile.on,.btn.primary,.dots li[data-on=true]){background:var(--grad)!important;color:#111!important;border-color:transparent!important}
+:root[data-theme=dark] .drawbtn:not(:disabled){animation:glow 2s ease-in-out infinite}
+@keyframes glow{50%{filter:brightness(1.15) drop-shadow(0 0 18px rgba(255,140,80,.55))}}
+:root[data-theme=dark] .dr[aria-pressed=true]{background:var(--grad);color:#111}
+:root[data-theme=dark] .aimark{border-color:transparent!important;background:var(--grad)!important;color:#111!important}
+:root[data-theme=dark] .mflow li[data-s=run] .mnode{background:var(--grad)!important;color:#111!important}
+/* fortune names in their own colors */
+:root[data-theme=dark] :where(.t3d,.luckbox b,.mresult b){-webkit-background-clip:text;background-clip:text;color:transparent!important;text-shadow:none;filter:drop-shadow(0 0 24px rgba(255,170,80,.35))}
+:root[data-theme=dark] .t3d.daidaikichi{background-image:var(--g-daidaikichi)}
+:root[data-theme=dark] .t3d.daikichi{background-image:var(--g-daikichi);filter:drop-shadow(0 0 24px rgba(255,90,100,.35))}
+:root[data-theme=dark] .t3d.chukichi{background-image:var(--g-chukichi);filter:drop-shadow(0 0 24px rgba(52,211,153,.35))}
+:root[data-theme=dark] .luckbox b,:root[data-theme=dark] .mresult b{background-image:var(--grad)}
+:root[data-theme=dark] .t3d rt{color:transparent}
+@media(prefers-reduced-motion:reduce){:root[data-theme=dark] .drawbtn{animation:none}}
+:root[data-theme=dark] .kiosk .kchip.on,:root[data-theme=dark] .kiosk .aitile.on,:root[data-theme=dark] .kiosk .btn.primary,:root[data-theme=dark] .kiosk .dots li[data-on=true],:root[data-theme=dark] main .btn.primary,:root[data-theme=dark] .kiosk .btn.primary:hover{background:var(--grad)!important;color:#111!important;border-color:transparent!important}
+:root[data-theme=dark] .kiosk .btn.primary:disabled{background:rgba(8,8,12,.7)!important;color:var(--mute)!important;border-color:var(--line)!important}

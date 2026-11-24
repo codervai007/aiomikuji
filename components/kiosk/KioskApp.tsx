@@ -19,6 +19,7 @@ import { EMPTY_MONITOR, IDLE_STEPS, publishMonitor, type MonitorState, type Step
 import { aiAvailable, generate } from "@/lib/generate";
 import { setSoundEnabled, sfx, unlockAudio } from "@/lib/sound";
 import { OmikujiTube, Sparkle } from "../Art";
+import { BgVideo } from "../BgVideo";
 import { Cabinet } from "../Cabinet";
 import { Reveal } from "../Reveal";
 import { FortuneName, PrintSlip, SlipBack, SlipFront, useGuideQr, type SlipData } from "../Slip";
@@ -179,6 +180,7 @@ export function KioskApp() {
 
   return (
     <div className="kiosk" data-screen={screen}>
+      {screen !== "idle" && screen !== "reveal" && <BgVideo />}
       {screen !== "idle" && screen !== "reveal" && (
         <header className="kbar">
           <span className="logo">
