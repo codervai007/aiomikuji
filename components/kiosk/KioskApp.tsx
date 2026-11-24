@@ -89,6 +89,32 @@ export function KioskApp() {
     return () => clearTimeout(t);
   }, [screen, idlePhase]);
 
+  // Intro sound: try to unmute once it plays; if the browser blocks sound it pauses the video,
+  // so go back to muted. Sound works after anyone has tapped the page once (or with Chrome's
+  // --autoplay-policy=no-user-gesture-required flag).
+  useEffect(() => {
+    if (screen !== "idle" || idlePhase !== "intro" || !st.sound) return;
+    const v = document.querySelector<HTMLVideoElement>(".idlevid");
+    if (!v) return;
+    let t: ReturnType<typeof setTimeout>;
+    const tryUnmute = () => {
+      if (!v.muted) return;
+      v.muted = false;
+      t = setTimeout(() => {
+        if (v.paused && !v.ended) {
+          v.muted = true;
+          void v.play().catch(() => {});
+        }
+      }, 120);
+    };
+    if (!v.paused) tryUnmute();
+    else v.addEventListener("playing", tryUnmute, { once: true });
+    return () => {
+      clearTimeout(t);
+      v.removeEventListener("playing", tryUnmute);
+    };
+  }, [screen, idlePhase, st.sound]);
+
   // A video that failed before the page finished loading never fires onError; check it directly.
   useEffect(() => {
     if (screen !== "idle") return;

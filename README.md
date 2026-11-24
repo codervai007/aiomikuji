@@ -40,11 +40,11 @@ APIキーがない・AIが失敗したときは、用意したテンプレート
 
 ### 印刷（80mm サーマルプリンター）
 
-スタッフ設定で「結果画面で自動印刷する」をオンにし、Chrome を次のように起動すると、印刷ダイアログなしで既定のプリンターに出ます。
+スタッフ設定で「結果画面で自動印刷する」をオンにし、Chrome を次のように起動すると、印刷ダイアログなしで既定のプリンターに出ます。`--autoplay-policy=no-user-gesture-required` を付けると、最初からスタート画面の動画に音が出ます（付けない場合は、最初に誰かが画面をタップした後から音が出ます）。
 
 ```bash
 # Windows の例
-chrome.exe --kiosk --kiosk-printing https://<your-app>.vercel.app/omikuji
+chrome.exe --kiosk --kiosk-printing --autoplay-policy=no-user-gesture-required https://<your-app>.vercel.app/omikuji
 ```
 
 ## 構成
