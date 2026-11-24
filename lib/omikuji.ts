@@ -1,12 +1,9 @@
 // Shared omikuji logic: used by the page (browser) and the API route (server).
 
 export const FORTUNES: [string, number][] = [
-  ["大大吉", 3],
-  ["大吉", 17],
-  ["中吉", 22],
-  ["吉", 25],
-  ["小吉", 18],
-  ["末吉", 15],
+  ["大大吉", 10],
+  ["大吉", 40],
+  ["中吉", 50],
 ];
 export const FORTUNE_NAMES = FORTUNES.map(([f]) => f);
 
@@ -63,7 +60,7 @@ export function drawFortune(): string {
   for (const [f, w] of FORTUNES) {
     if ((r -= w) < 0) return f;
   }
-  return "吉";
+  return "中吉";
 }
 
 /** Removes line breaks and control characters, and caps length, so a value can't add instructions to the prompt. */

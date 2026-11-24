@@ -10,9 +10,6 @@ const FORTUNE_COLOR: Record<string, string> = {
   大大吉: "#f5cb32",
   大吉: "#f6c68b",
   中吉: "#86efac",
-  吉: "#c4e0f2",
-  小吉: "#fbcfe8",
-  末吉: "#ddd6fe",
 };
 
 /** Furigana for each fortune. */
@@ -20,9 +17,6 @@ const READING: Record<string, string> = {
   大大吉: "だいだいきち",
   大吉: "だいきち",
   中吉: "ちゅうきち",
-  吉: "きち",
-  小吉: "しょうきち",
-  末吉: "すえきち",
 };
 
 const ITEM_STYLE: Record<(typeof KEYS)[number], { icon: string; color: string }> = {
