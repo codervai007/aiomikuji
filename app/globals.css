@@ -454,9 +454,15 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .idle.hasvid{background:#000}
 .idle.hasvid .idlecard{position:absolute;left:0;right:0;bottom:7vh;margin:0 auto;width:auto;padding:0;background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none;display:block}
 .idle.hasvid .idlecard>:not(.startbtn){display:none}
-.kiosk .idle.hasvid span.startbtn.btn.primary{background:none!important;border:0!important;box-shadow:none!important;color:#f0f0fa!important;min-height:0;padding:0;text-transform:none;font:700 clamp(32px,5.5vh,64px)/1.2 var(--sans);letter-spacing:.18em;text-shadow:0 2px 18px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.9);animation:breathe 2.2s ease-in-out infinite}
+.kiosk .idle.hasvid span.startbtn.btn.primary{background:none!important;border:0!important;box-shadow:none!important;color:#f0f0fa!important;min-height:0;padding:0;text-transform:none;font:700 clamp(36px,6vh,72px)/1.2 "D-DIN",var(--sans);letter-spacing:.5em;text-indent:.5em;text-shadow:0 2px 18px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.9);animation:breathe 2.2s ease-in-out infinite}
 @keyframes breathe{50%{opacity:.45}}
 .idle.hasvid .is1,.idle.hasvid .is2,.idle.hasvid .is3{display:none}
-@media(max-width:900px){.idle.hasvid .idlevid{object-fit:contain;object-position:50% 40%}.kiosk .idle.hasvid span.startbtn.btn.primary{font-size:26px;letter-spacing:.12em}}
+@media(max-width:900px){.idle.hasvid .idlevid{object-fit:contain;object-position:50% 40%}.kiosk .idle.hasvid span.startbtn.btn.primary{font-size:30px;letter-spacing:.4em;text-indent:.4em}}
 @media(prefers-reduced-motion:reduce){.idle.hasvid .startbtn{animation:none}}
 
+
+.fullvid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.wflash{position:absolute;inset:0;z-index:6;background:#fff;pointer-events:none;animation:wflash .7s ease-out forwards}
+@keyframes wflash{to{opacity:0}}
+:root[data-theme=dark] .skip{background:rgba(0,0,0,.55);color:var(--ink);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;font-size:15px}
+:root[data-theme=dark] .skip:hover{background:var(--ink);color:#000}

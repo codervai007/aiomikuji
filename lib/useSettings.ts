@@ -53,8 +53,8 @@ export function sanitize(raw: unknown): Settings {
     sound: s.sound !== false,
     autoPrint: s.autoPrint === true,
     resetSeconds: Math.min(120, Math.max(5, num(s.resetSeconds, 20))),
-    // Older saves stored "light" only because it was the default: move them to dark.
-    theme: s.themeV === 2 && s.theme === "light" ? "light" : "dark",
+    // The booth always runs in the dark theme.
+    theme: "dark",
     themeV: 2,
   };
 }
@@ -89,7 +89,7 @@ export function useSettings() {
 
   useEffect(() => {
     if (!loaded) return;
-    document.documentElement.dataset.theme = st.theme;
+    document.documentElement.dataset.theme = "dark";
     try {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(st));
     } catch {

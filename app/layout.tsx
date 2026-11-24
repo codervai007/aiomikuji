@@ -18,11 +18,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=Shippori+Mincho+B1:wght@600;800&family=BIZ+UDPGothic:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap"
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `var t="dark";try{var s=JSON.parse(localStorage.getItem("omikuji-booth-v3")||"{}");if(s.themeV===2&&s.theme==="light")t="light"}catch(e){}document.documentElement.dataset.theme=t;`,
-          }}
-        />
       </head>
       <body>{children}</body>
     </html>

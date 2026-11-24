@@ -212,7 +212,7 @@ export function KioskApp() {
               <br />
               <em>あなただけ</em>のおみくじ
             </h1>
-            <span className="btn primary startbtn">タッチしてスタート</span>
+            <span className="btn primary startbtn">{idleVideo && idleReady ? "START" : "タッチしてスタート"}</span>
             <p className="idlemug">
               当たりのマグカップ <b>残り {mugsLeft}</b> / {st.mugs}個
             </p>
