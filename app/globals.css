@@ -466,3 +466,66 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 @keyframes wflash{to{opacity:0}}
 :root[data-theme=dark] .skip{background:rgba(0,0,0,.55);color:var(--ink);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;font-size:15px}
 :root[data-theme=dark] .skip:hover{background:var(--ink);color:#000}
+
+/* ---------- bigger text (booth screens are read from a step back) ---------- */
+.kbar{padding-block:16px}
+.kbar .logo{font-size:28px}
+.kbar .logo i{width:42px;height:42px;font-size:21px}
+.dots{gap:10px}
+.dots li{font-size:19px;padding:6px 20px}
+.counter{font-size:18px;padding:6px 20px}
+.counter b{font-size:32px}
+.counter small{font-size:17px}
+.khd h2{font-size:clamp(40px,6vh,68px)}
+.khd p{font-size:clamp(20px,2.4vh,28px)}
+.krow .q{font-size:clamp(20px,1.6vw,30px);margin-bottom:14px}
+.kchip{min-height:clamp(72px,8.5vh,100px);font-size:clamp(22px,1.75vw,34px);padding:0 clamp(22px,1.8vw,34px)}
+.btn.big{min-height:clamp(72px,8vh,96px);font-size:clamp(22px,1.7vw,32px);padding:0 40px}
+.aitile{font-size:clamp(28px,4vh,46px)}
+.aimark{width:clamp(72px,8vh,96px);height:clamp(72px,8vh,96px);font-size:clamp(34px,4vh,46px)}
+.pickside{width:clamp(300px,30vw,440px);gap:20px}
+.pickside h2{font-size:clamp(28px,4.2vh,46px)}
+.picked{min-height:130px;font-size:28px}
+.picked b{font-size:clamp(56px,8vh,84px)}
+.drawbtn{min-height:clamp(96px,12vh,130px);font-size:clamp(36px,5vh,56px)!important}
+.linkbtn{font-size:22px}
+.dr .k{font-size:clamp(11px,1.15vw,17px)}
+.dr .a{font-size:15px}
+.reslabel{font-size:clamp(22px,3vh,32px)}
+.resluck{font-size:clamp(84px,15vh,170px)}
+.reswin{font-size:24px}
+.reswin b{font-size:clamp(34px,5vh,48px)}
+.resmsg,.resprint{font-size:clamp(20px,2.6vh,28px)}
+.rescount{font-size:clamp(17px,2vh,22px)}
+.resslip{width:min(460px,42vw)}
+.tag{font-size:15px}
+.luckbox .lt>span{font-size:15px}
+.lbl{font-size:14px}
+.items p{font-size:19px}
+.slipft{font-size:14px}
+.back h4{font-size:17px}
+.back pre{font-size:14px}
+.tiplist li{font-size:16px}
+.contact{font-size:14px}
+.monitor{font-size:clamp(18px,1.5vw,30px)}
+.mpair pre{font-size:1.05em}
+.manswer pre{font-size:1.15em}
+.mflow em{font-size:.85em}
+.mwho{font-size:.8em}
+.mstats span{font-size:.8em}
+.launchcard h3{font-size:28px}
+.launchcard p{font-size:19px}
+.lead{font-size:20px}
+.staff,.staff .small{font-size:17px}
+.staff summary{font-size:20px}
+.staff h3{font-size:22px}
+.tips label{font-size:17px}
+.toggle,.srow label{font-size:17px}
+:root[data-theme=dark] .dots li,:root[data-theme=dark] .counter span,:root[data-theme=dark] .counter small{font-size:17px}
+:root[data-theme=dark] .mstats span,:root[data-theme=dark] .mwho{font-size:.8em}
+:root[data-theme=dark] .skip{font-size:18px;min-height:60px;padding:0 26px}
+.monitor{font-size:clamp(17px,1.35vw,28px)}
+.manswer pre{flex:none}
+.mresult{margin-top:12px;padding:6px 14px}
+.mart{width:clamp(52px,4vw,76px)}
+.mresult b{font-size:2em}

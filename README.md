@@ -17,12 +17,12 @@ APIキーがない・AIが失敗したときは、用意したテンプレート
 
 | URL | 使う場所 | 内容 |
 |---|---|---|
-| `/kiosk` | 来場者のタッチパネル（横向き・全画面） | スタート → あなたについて → AIの利用 → 引き出し → 演出 → 結果（自動で最初にもどる） |
-| `/monitor` | ブース後方のテレビ | 裏側モニター。キオスクの動きがリアルタイムで映る。体験人数・当たり残り・AI利用率も表示 |
+| `/omikuji` | 来場者のタッチパネル（横向き・全画面）。旧URL `/kiosk` からも転送 | スタート → あなたについて → AIの利用 → 引き出し → 演出 → 結果（自動で最初にもどる） |
+| `/monitor` | ブース後方のテレビ | 裏側モニター。おみくじ画面の動きがリアルタイムで映る。体験人数・当たり残り・AI利用率も表示 |
 | `/staff` | スタッフ用（PIN） | 当たりの数・効果音・自動印刷・裏面のコツ・部署・アンケート集計 |
 | `/` | — | 3つの画面へのリンク |
 
-キオスクとモニターは **同じパソコンの同じブラウザ** で別ウィンドウとして開くと自動で連動します（BroadcastChannel）。
+おみくじ画面とモニターは **同じパソコンの同じブラウザ** で別ウィンドウとして開くと自動で連動します（BroadcastChannel）。
 設定・カウント・アンケートもそのブラウザに保存され、3つの画面で共有されます。
 
 ### 演出の動画（Seedance など）
@@ -44,7 +44,7 @@ APIキーがない・AIが失敗したときは、用意したテンプレート
 
 ```bash
 # Windows の例
-chrome.exe --kiosk --kiosk-printing https://<your-app>.vercel.app/kiosk
+chrome.exe --kiosk --kiosk-printing https://<your-app>.vercel.app/omikuji
 ```
 
 ## 構成
@@ -52,17 +52,17 @@ chrome.exe --kiosk --kiosk-printing https://<your-app>.vercel.app/kiosk
 ```
 app/
   page.tsx               3画面へのリンク
-  kiosk/ monitor/ staff/ 各画面
+  omikuji/ monitor/ staff/ 各画面
   api/omikuji/route.ts   Claude 呼び出し（GET: AI接続状態 / POST: おみくじ生成）
   api/staff/route.ts     スタッフPINの確認
 components/
-  kiosk/KioskApp.tsx     キオスクの流れ
+  kiosk/KioskApp.tsx     おみくじ画面の流れ
   monitor/MonitorApp.tsx 裏側モニター
   staff/StaffApp.tsx     スタッフ画面
   Cabinet / Slip / Reveal / FortuneArt / Art / StaffPanel
 lib/
   omikuji.ts             抽選・指示文・チェック・コツ（画面とサーバーで共通）
-  booth.ts               キオスク → モニターの連動
+  booth.ts               おみくじ画面 → モニターの連動
   sound.ts               効果音（音声ファイル不要）
   useSettings.ts         設定と記録（localStorage、ウィンドウ間で同期）
 ```

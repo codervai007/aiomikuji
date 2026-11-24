@@ -69,11 +69,11 @@ export function StaffApp() {
         <div className="sechd">
           <div>
             <h2>スタッフ設定</h2>
-            <p>この端末のキオスク・モニターに、すぐに反映されます。</p>
+            <p>この端末のおみくじ画面・モニターに、すぐに反映されます。</p>
           </div>
           <div className="cta">
-            <a className="btn" href="/kiosk" target="_blank">
-              キオスクを開く
+            <a className="btn" href="/omikuji" target="_blank">
+              おみくじ画面を開く
             </a>
             <a className="btn" href="/monitor" target="_blank">
               モニターを開く

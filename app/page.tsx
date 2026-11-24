@@ -1,8 +1,8 @@
 import { OmikujiTube, Sparkle } from "@/components/Art";
 
 const SCREENS = [
-  { href: "/kiosk", c: "c1", n: "一", t: "キオスク", d: "来場者がさわるタッチパネル。全画面・横向きで使います。" },
-  { href: "/monitor", c: "c2", n: "二", t: "裏側モニター", d: "ブース後方の大きな画面。キオスクの動きがリアルタイムで映ります。" },
+  { href: "/omikuji", c: "c1", n: "一", t: "おみくじ画面", d: "来場者がさわるタッチパネルの画面。全画面・横向きで使います。" },
+  { href: "/monitor", c: "c2", n: "二", t: "裏側モニター", d: "ブース後方の大きな画面。おみくじ画面の動きがリアルタイムで映ります。" },
   { href: "/staff", c: "c3", n: "三", t: "スタッフ設定", d: "当たりの数・裏面のコツ・部署・アンケート集計（PINが必要）。" },
 ];
 
@@ -19,7 +19,7 @@ export default function Page() {
               <br />
               <em>ブース</em>
             </h1>
-            <p className="lead">同じパソコンで「キオスク」と「裏側モニター」を別々のウィンドウで開くと、自動で連動します。</p>
+            <p className="lead">同じパソコンで「おみくじ画面」と「裏側モニター」を別々のウィンドウで開くと、自動で連動します。</p>
           </div>
           <div className="heroart">
             <OmikujiTube />
