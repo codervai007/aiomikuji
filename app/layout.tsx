@@ -10,7 +10,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja" suppressHydrationWarning>
+    <html lang="ja" data-theme="dark" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var s=JSON.parse(localStorage.getItem("omikuji-booth-v3")||"{}");if(s.theme==="dark")document.documentElement.dataset.theme="dark"}catch(e){}`,
+            __html: `var t="dark";try{var s=JSON.parse(localStorage.getItem("omikuji-booth-v3")||"{}");if(s.themeV===2&&s.theme==="light")t="light"}catch(e){}document.documentElement.dataset.theme=t;`,
           }}
         />
       </head>

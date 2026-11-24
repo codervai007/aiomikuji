@@ -16,6 +16,8 @@ export type Settings = {
   autoPrint: boolean;
   resetSeconds: number;
   theme: "light" | "dark";
+  /** 2 = the theme was chosen on purpose (dark is the default otherwise). */
+  themeV: number;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -30,7 +32,8 @@ export const DEFAULT_SETTINGS: Settings = {
   sound: true,
   autoPrint: false,
   resetSeconds: 20,
-  theme: "light",
+  theme: "dark",
+  themeV: 2,
 };
 
 export const SETTINGS_KEY = "omikuji-booth-v3";
@@ -50,7 +53,9 @@ export function sanitize(raw: unknown): Settings {
     sound: s.sound !== false,
     autoPrint: s.autoPrint === true,
     resetSeconds: Math.min(120, Math.max(5, num(s.resetSeconds, 20))),
-    theme: s.theme === "dark" ? "dark" : "light",
+    // Older saves stored "light" only because it was the default: move them to dark.
+    theme: s.themeV === 2 && s.theme === "light" ? "light" : "dark",
+    themeV: 2,
   };
 }
 

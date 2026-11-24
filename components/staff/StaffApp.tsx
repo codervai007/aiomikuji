@@ -85,7 +85,7 @@ export function StaffApp() {
           <h3 style={{ marginTop: 8 }}>ブースの動き</h3>
           <div className="srow">
             <label className="toggle">
-              <input type="checkbox" checked={st.theme === "dark"} onChange={(e) => setSt((s) => ({ ...s, theme: e.target.checked ? "dark" : "light" }))} />
+              <input type="checkbox" checked={st.theme === "dark"} onChange={(e) => setSt((s) => ({ ...s, theme: e.target.checked ? "dark" : "light", themeV: 2 }))} />
               ダークモード（黒）
             </label>
             <label className="toggle">
