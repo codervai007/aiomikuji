@@ -1,6 +1,7 @@
 "use client";
 import { KEYS, kan, type FortuneText } from "@/lib/omikuji";
 import { Sparkle } from "./Art";
+import { FortuneArt } from "./FortuneArt";
 
 export type SlipData = { fortune: string; text: FortuneText; prompt: string; win: boolean; no: number; tips: string[] };
 
@@ -62,8 +63,11 @@ export function Slip({
             </div>
 
             <div className="luckbox" style={{ background: FORTUNE_COLOR[data.fortune] ?? "#fef3dc" }}>
-              <span>運勢</span>
-              <b>{data.fortune}</b>
+              <FortuneArt fortune={data.fortune} className="art" />
+              <div className="lt">
+                <span>運勢</span>
+                <b className={data.fortune.length > 2 ? "long" : undefined}>{data.fortune}</b>
+              </div>
             </div>
 
             <ul className="items">
