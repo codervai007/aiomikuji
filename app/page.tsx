@@ -11,7 +11,6 @@ const SCREENS = [
 export default function Page() {
   return (
     <main className="band home">
-      <video className="homebg" src="/media/home-bg.mp4" poster="/media/home-bg-poster.jpg" autoPlay muted loop playsInline aria-hidden="true" />
       <div className="wrap">
         <div className="herocard">
           <Sparkle className="sp1" color="#e9525c" />
