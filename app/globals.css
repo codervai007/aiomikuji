@@ -269,7 +269,10 @@ select{appearance:none;padding-right:42px;min-width:170px;cursor:pointer;backgro
 }
 /* reveal */
 .reveal{position:fixed;inset:0;z-index:30;display:grid;place-items:center;overflow:hidden;border:0}
-.reveal.video video{width:100%;height:100%;object-fit:contain;background:#000}
+.reveal.video{background:#7a0a10}
+.bgvid{position:absolute;inset:-5%;width:110%;height:110%;object-fit:cover;filter:blur(36px) brightness(.75) saturate(1.2)}
+.fgvid{position:relative;height:100%;max-width:100%;object-fit:contain;border-inline:4px solid var(--ink);box-shadow:0 0 0 4px #f5cb32,0 30px 80px rgba(0,0,0,.5)}
+.vwin{position:absolute;left:0;right:0;bottom:7vh;width:fit-content;margin:0 auto;background:var(--red);color:#fff;border:var(--b);border-radius:12px;box-shadow:var(--sh);padding:6px 26px;font-weight:800;font-size:clamp(24px,4vh,40px);animation:drop .7s 1s cubic-bezier(.2,1.6,.4,1) both}
 .skip{position:absolute;right:24px;bottom:24px;min-height:52px;padding:0 22px;border:var(--b);border-radius:10px;background:#fff;font:700 18px var(--sans);box-shadow:var(--sh);cursor:pointer}
 .rtube{width:min(34vh,300px)}
 .rtube svg{width:100%;height:auto;overflow:visible}

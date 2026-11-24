@@ -43,11 +43,14 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
   }, [useVideo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (useVideo) {
+    const src = `/media/reveal-${info?.slug}.mp4`;
     return (
-      <div className="reveal video" style={{ background: info?.color }}>
+      <div className="reveal video">
+        <video className="bgvid" src={src} autoPlay muted playsInline aria-hidden="true" />
         <video
           ref={vid}
-          src={`/media/reveal-${info?.slug}.mp4`}
+          className="fgvid"
+          src={src}
           playsInline
           onCanPlay={() => {
             const v = vid.current;
@@ -59,11 +62,8 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
           }}
           onEnded={finish}
           onError={() => setUseVideo(false)}
-          onPlay={(e) => {
-            if (fortune === "大大吉" || win) sfx.fanfare();
-            void e;
-          }}
         />
+        {win && <p className="vwin">マグカップ当選！</p>}
         <button className="skip" onClick={finish}>
           スキップ
         </button>
