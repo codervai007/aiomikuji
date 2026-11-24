@@ -43,6 +43,7 @@ export function KioskApp() {
   const [left, setLeftSec] = useState(0);
   const [aiReady, setAiReady] = useState(false);
   const [idleVideo, setIdleVideo] = useState(true);
+  const [idleReady, setIdleReady] = useState(false);
   const qr = useGuideQr();
   const mon = useRef<MonitorState>(EMPTY_MONITOR);
 
@@ -199,8 +200,8 @@ export function KioskApp() {
       )}
 
       {screen === "idle" && (
-        <button className="idle" onClick={start} aria-label="タッチしてスタート">
-          {idleVideo && <video className="idlevid" src="/media/idle.mp4" autoPlay muted loop playsInline onError={() => setIdleVideo(false)} />}
+        <button className={idleVideo && idleReady ? "idle hasvid" : "idle"} onClick={start} aria-label="タッチしてスタート">
+          {idleVideo && <video className="idlevid" src="/media/idle.mp4" autoPlay muted loop playsInline onLoadedData={() => setIdleReady(true)} onError={() => setIdleVideo(false)} />}
           <Sparkle className="is1" color="#e9525c" />
           <Sparkle className="is2" color="#86efac" />
           <Sparkle className="is3" color="#f5cb32" />
