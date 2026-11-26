@@ -52,6 +52,9 @@ export function KioskApp() {
   // Start screen: play the intro (AI → おみくじ) once, then loop its ending and show START.
   const [idlePhase, setIdlePhase] = useState<"intro" | "loop">("intro");
   const [soundBlocked, setSoundBlocked] = useState(false);
+  // /omikuji?test=win : every draw is a win, and nothing is counted (for rehearsals).
+  const [testWin, setTestWin] = useState(false);
+  useEffect(() => setTestWin(new URLSearchParams(window.location.search).get("test") === "win"), []);
   const [lang, setLang] = useState<Lang>("ja");
   const t = (ja: string) => tr(lang, ja);
   const en = lang === "en";
@@ -192,8 +195,8 @@ export function KioskApp() {
     // Fortune and win come from the random generator, never from the AI.
     const fortune = drawFortune();
     const mugsLeft = Math.max(0, st.mugs - st.won);
-    const win = mugsLeft > 0 && rnd() < mugsLeft / Math.max(1, st.expected - st.drawn);
-    setSt((s) => ({
+    const win = testWin || (mugsLeft > 0 && rnd() < mugsLeft / Math.max(1, st.expected - st.drawn));
+    if (!testWin) setSt((s) => ({
       ...s,
       drawn: s.drawn + 1,
       won: s.won + (win ? 1 : 0),
@@ -248,6 +251,7 @@ export function KioskApp() {
           <a href="/" className="logolink" aria-label="ホームへ戻る">
             <LogoImage height={64} />
           </a>
+          {testWin && <span className="testbadge">テスト（当たり確定・記録なし）</span>}
           <LangToggle lang={lang} onChange={(l) => (sfx.tap(), setLang(l))} />
           <span className="counter">
             <span>{t("当たり残り")}</span>

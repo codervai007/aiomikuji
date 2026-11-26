@@ -92,6 +92,9 @@ export function StaffApp() {
               <input type="checkbox" checked={st.autoPrint} onChange={(e) => setSt((s) => ({ ...s, autoPrint: e.target.checked }))} />
               結果画面で自動印刷する
             </label>
+            <a className="btn" href="/omikuji?test=win" target="_blank" rel="noreferrer">
+              当たりをテストする（記録されません）
+            </a>
           </div>
           <p className="small">
             自動印刷は Chrome を <code>--kiosk --kiosk-printing</code> で起動すると、印刷ダイアログなしで既定のプリンター（80mmサーマル推奨）に出ます。
