@@ -64,7 +64,18 @@ const ART: Record<string, { el: () => React.ReactElement; label: string }> = {
   中吉: { el: Koban, label: "小判" },
 };
 
+/** 3D fiery icon per fortune (public/media/art/<slug>.jpg). */
+const PHOTO: Record<string, string> = { 大大吉: "daidaikichi", 大吉: "daikichi", 中吉: "chukichi" };
+
 export function FortuneArt({ fortune, className }: { fortune: string; className?: string }) {
+  const art = ART[fortune] ?? ART["中吉"];
+  const slug = PHOTO[fortune] ?? "chukichi";
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img className={`${className ?? ""} artimg`} src={`/media/art/${slug}.jpg`} alt={art.label} width={280} height={280} decoding="async" />;
+}
+
+/** The original flat drawings, kept for places that need a vector (none at the moment). */
+export function FortuneArtFlat({ fortune, className }: { fortune: string; className?: string }) {
   const art = ART[fortune] ?? ART["中吉"];
   const El = art.el;
   return (

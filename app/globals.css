@@ -914,3 +914,22 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .kiosk[data-screen=about] .kchip{overflow:visible}
 @media(min-width:901px){.kiosk[data-screen=about] .kcard{overflow:visible}}
 @media(prefers-reduced-motion:reduce){.scatter .scl{animation:none}}
+
+/* ---------- fortune icons: 3D fire art, no white tile ---------- */
+:root body :is(.luckbox .art,.rart,.mart).artimg{display:block;object-fit:cover;background:#120806!important;padding:0!important;border:1px solid rgba(255,150,70,.5)!important;border-radius:16px!important;box-shadow:0 0 18px rgba(255,100,40,.35),inset 0 0 0 1px rgba(0,0,0,.4)}
+:root body .luckbox .art.artimg{width:104px;height:104px}
+
+/* ---------- fortune name: brushed mincho, solid fire colours (no rainbow gradient) ---------- */
+:root body :is(.luckbox b,.resluck,.mresult b){font-family:"Shippori Mincho B1","Yu Mincho",serif!important;font-weight:800!important;letter-spacing:.06em;
+  background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;-webkit-text-fill-color:currentColor;filter:none!important;
+  color:#ff6a3d!important;text-shadow:0 0 24px rgba(255,90,40,.55),0 3px 0 #4a0f06}
+:root body :is(.luckbox b,.resluck).daidaikichi{color:#ffc94a!important;text-shadow:0 0 26px rgba(255,170,40,.6),0 3px 0 #5a2a04}
+:root body :is(.luckbox b,.resluck).daikichi{color:#ff5a36!important}
+:root body :is(.luckbox b,.resluck).chukichi{color:#ff9147!important;text-shadow:0 0 22px rgba(255,130,50,.5),0 3px 0 #4a1a06}
+:root body :is(.luckbox b,.resluck,.mresult b) rt{color:#fff!important;-webkit-text-fill-color:#fff;text-shadow:none;font-family:"M PLUS 1",sans-serif!important;font-weight:700;letter-spacing:.3em}
+/* labels and body text: plain white, calm */
+:root body .resside .reslabel{background:none!important;color:#fff!important;-webkit-text-fill-color:#fff;font-family:"Shippori Mincho B1",serif!important;font-weight:800!important;letter-spacing:.2em}
+:root body .slip .items p{color:#fff!important}
+:root body .slip .items .lbl{color:rgba(255,226,200,.75)!important}
+:root body .slip .luckbox .lt>span{color:#fff!important}
+:root body :is(.luckbox b,.resluck,.mresult b) ruby{font-family:inherit!important;font-weight:inherit!important}

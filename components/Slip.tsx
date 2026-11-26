@@ -63,7 +63,7 @@ export function SlipFront({ data }: { data: SlipData }) {
         <FortuneArt fortune={data.fortune} className="art" />
         <div className="lt">
           <span>{t("運勢")}</span>
-          <b className={data.fortune.length > 2 ? "long" : undefined}>
+          <b className={`${FORTUNE_INFO[data.fortune]?.slug ?? ""}${data.fortune.length > 2 ? " long" : ""}`}>
             <FortuneName fortune={data.fortune} />
           </b>
           {lang === "en" && <small className="lucken">{FORTUNE_EN[data.fortune]?.name}</small>}
