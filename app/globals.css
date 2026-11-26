@@ -933,3 +933,24 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 :root body .slip .items .lbl{color:rgba(255,226,200,.75)!important}
 :root body .slip .luckbox .lt>span{color:#fff!important}
 :root body :is(.luckbox b,.resluck,.mresult b) ruby{font-family:inherit!important;font-weight:inherit!important}
+
+/* ---------- fortune name in fire mode: hot core, flames licking upward, flicker ---------- */
+:root body :is(.luckbox b,.resluck,.mresult b),
+:root body :is(.luckbox b,.resluck).daidaikichi,
+:root body :is(.luckbox b,.resluck).daikichi,
+:root body :is(.luckbox b,.resluck).chukichi{
+  background:linear-gradient(0deg,#fff4c4 0%,#ffd23f 32%,#ff8a1f 66%,#e2321a 100%)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  color:transparent!important;-webkit-text-fill-color:transparent!important;
+  animation:fire-text 1.6s ease-in-out infinite alternate}
+:root body :is(.luckbox b,.resluck).daidaikichi{background:linear-gradient(0deg,#ffffff 0%,#fff1a0 30%,#ffc93a 62%,#ff7a1a 100%)!important;-webkit-background-clip:text!important;background-clip:text!important}
+@keyframes fire-text{
+  0%  {text-shadow:0 0 5px rgba(255,240,190,.9),0 -4px 8px #ffd54a,2px -10px 14px #ff9a2e,-2px -18px 20px #ff5a1f,3px -28px 28px rgba(200,30,10,.75)}
+  25% {text-shadow:0 0 6px rgba(255,240,190,.9),1px -5px 9px #ffd54a,-2px -12px 15px #ff9a2e,3px -20px 22px #ff5a1f,-3px -32px 30px rgba(200,30,10,.7)}
+  50% {text-shadow:0 0 5px rgba(255,240,190,.85),-1px -4px 7px #ffd54a,2px -9px 12px #ff9a2e,-1px -16px 18px #ff5a1f,2px -24px 26px rgba(200,30,10,.8)}
+  75% {text-shadow:0 0 7px rgba(255,240,190,.95),1px -6px 10px #ffd54a,-3px -13px 16px #ff9a2e,2px -22px 24px #ff5a1f,-2px -34px 32px rgba(200,30,10,.65)}
+  100%{text-shadow:0 0 5px rgba(255,240,190,.9),0 -5px 8px #ffd54a,3px -11px 14px #ff9a2e,-3px -19px 21px #ff5a1f,1px -30px 29px rgba(200,30,10,.75)}
+}
+:root body :is(.luckbox b,.resluck,.mresult b) rt{animation:none;text-shadow:0 1px 6px rgba(0,0,0,.6)!important}
+@media(prefers-reduced-motion:reduce){:root body :is(.luckbox b,.resluck,.mresult b){animation:none}}
+@media print{:root body :is(.luckbox b,.resluck,.mresult b){animation:none;text-shadow:none}}
