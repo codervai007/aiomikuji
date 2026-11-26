@@ -3,7 +3,7 @@ import { LogoImage } from "@/components/Logo";
 import TiltedCard, { TiltedCardLayer } from "@/components/TiltedCard";
 
 const SCREENS = [
-  { href: "/omikuji", img: "/media/idle-poster.jpg", c: "c1", n: "一", t: "おみくじ画面", d: "来場者がさわるタッチパネルの画面。全画面・横向きで使います。" },
+  { href: "/omikuji", img: "/media/card-omikuji.jpg", c: "c1", n: "一", t: "おみくじ画面", d: "来場者がさわるタッチパネルの画面。全画面・横向きで使います。" },
   { href: "/monitor", img: "/media/intro-poster.jpg", c: "c2", n: "二", t: "裏側モニター", d: "ブース後方の大きな画面。おみくじ画面の動きがリアルタイムで映ります。" },
   { href: "/staff", img: "/media/home-bg-poster.jpg", c: "c3", n: "三", t: "スタッフ設定", d: "当たりの数・裏面のコツ・部署・アンケート集計（PINが必要）。" },
 ];

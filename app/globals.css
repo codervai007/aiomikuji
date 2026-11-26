@@ -867,3 +867,14 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 @keyframes boot-vid-in{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
 #boot .boot-vid{-webkit-mask-image:radial-gradient(ellipse 50% 48% at 50% 50%,#000 45%,transparent 100%);mask-image:radial-gradient(ellipse 50% 48% at 50% 50%,#000 45%,transparent 100%)}
 #boot .boot-dots{margin-top:14px}
+
+/* home: stylish shrine-style lettering (mincho + fire gradient) — ":root body" beats the global font rule */
+:root body .home :is(.tctitle,.tcback h3){font-family:"Shippori Mincho B1","Yu Mincho",serif!important;font-weight:800!important;letter-spacing:.08em;font-size:30px;
+  background:linear-gradient(180deg,#fff6d6 0%,#ffd36b 38%,#ff8a3d 72%,#e2405f 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+:root body .home .tctitle{gap:14px;text-shadow:none;filter:drop-shadow(0 2px 10px rgba(0,0,0,.85)) drop-shadow(0 0 18px rgba(255,110,40,.35))}
+:root body .home :is(.tctitle,.tcback h3) .num{font-family:"Shippori Mincho B1",serif!important;font-weight:800;-webkit-text-fill-color:#ffd36b;color:#ffd36b;border:1.5px solid rgba(255,200,110,.7);background:rgba(0,0,0,.35);
+  width:44px;height:44px;border-radius:50%;display:inline-grid;place-items:center;font-size:22px;letter-spacing:0;box-shadow:0 0 14px rgba(255,140,60,.35) inset;flex:none}
+:root body .home .tchint{font-family:"Shippori Mincho B1",serif!important;font-weight:600;letter-spacing:.2em;color:rgba(255,226,180,.8)}
+:root body .home .herocard .lead{font-family:"Shippori Mincho B1","Yu Mincho",serif!important;font-weight:600;font-size:clamp(18px,1.6vw,22px);line-height:1.9;letter-spacing:.06em;color:#e9dcc8!important}
+/* hero clip: thinner side fade so the last letter (じ) isn't faded out */
+.home .herovidwrap{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 12%,#000 88%,transparent 100%)!important;mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 12%,#000 88%,transparent 100%)!important}
