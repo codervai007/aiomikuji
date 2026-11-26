@@ -101,7 +101,6 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
     return (
       <div className="reveal video winclip">
         <video key="win" ref={vid} className="fullvid" src="/media/win.mp4" playsInline autoPlay onCanPlay={play} onEnded={end} onError={end} />
-        <p className="vwin winbanner">{t("マグカップ当選！")}</p>
         {skip}
       </div>
     );
@@ -113,7 +112,6 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
       <div className="reveal video">
         <video key="bg" className="bgvid" src={src} autoPlay muted playsInline aria-hidden="true" />
         <video key="reveal" ref={vid} className="fgvid" src={src} playsInline onCanPlay={play} onEnded={finish} onError={() => setRevealVideo(false)} />
-        {win && <p className="vwin">{t("マグカップ当選！")}</p>}
         {skip}
         {flashEl}
       </div>
