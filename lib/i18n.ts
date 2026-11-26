@@ -75,8 +75,8 @@ const EN: Record<string, string> = {
   "スタッフが印刷してお渡しします。": "A staff member will print it for you.",
   表を見る: "See the front",
   "裏（AIミニ解説）を見る": "See the back (AI tips)",
-  おわる: "Finish",
-  ホームへもどる: "Back to home",
+  終わる: "Finish",
+  ホームへ戻る: "Back to home",
   // slip
   AIおみくじ: "AI Omikuji",
   運勢: "Fortune",

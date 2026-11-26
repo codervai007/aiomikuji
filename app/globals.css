@@ -881,3 +881,10 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .resside .homelink{display:inline-flex;align-items:center;gap:8px;margin-top:14px;align-self:center;text-decoration:none;font-size:17px;font-weight:700;color:rgba(255,236,210,.85);padding:8px 14px;border-radius:999px}
 .resside .homelink:hover{background:rgba(255,255,255,.08);color:#fff}
 .resside .homelink span{font-size:20px}
+/* ホームへ戻る: gold outline pill with gradient text */
+:root body .resside .homelink{border:1.5px solid rgba(255,196,90,.75);background:rgba(255,170,60,.12);padding:10px 22px;margin-top:18px;
+  box-shadow:0 0 18px rgba(255,140,60,.25),inset 0 0 12px rgba(255,180,80,.12);transition:background .2s,box-shadow .2s,transform .2s}
+:root body .resside .homelink b{background:linear-gradient(90deg,#ffe08a,#ffb347 50%,#ff7a59);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800;letter-spacing:.06em}
+:root body .resside .homelink span{color:#ffc86b}
+:root body .resside .homelink:hover{background:rgba(255,170,60,.22);box-shadow:0 0 26px rgba(255,140,60,.45);transform:translateY(-1px)}
+:root body .resside .homelink{border-radius:999px!important}

@@ -169,7 +169,7 @@ export function KioskApp() {
     };
   }, [screen, reset]);
 
-  // Result screen: print. It stays until the visitor or staff presses おわる (no countdown).
+  // Result screen: print. It stays until the visitor or staff presses 終わる (no countdown).
   useEffect(() => {
     if (screen !== "result" || !st.autoPrint) return;
     const t = setTimeout(() => window.print(), 700);
@@ -498,11 +498,11 @@ export function KioskApp() {
                 {t(showBack ? "表を見る" : "裏（AIミニ解説）を見る")}
               </button>
               <button className="btn big primary" onClick={() => (sfx.tap(), reset())}>
-                {t("おわる")}
+                {t("終わる")}
               </button>
             </div>
             <a className="linkbtn homelink" href="/" onClick={() => sfx.tap()}>
-              <span aria-hidden>⌂</span> {t("ホームへもどる")}
+              <span aria-hidden>⌂</span> <b>{t("ホームへ戻る")}</b>
             </a>
           </aside>
         </main>
