@@ -30,7 +30,6 @@ import { LangProvider, LangToggle } from "@/lib/useLang";
 import { Scatter } from "../Scatter";
 
 type Screen = "idle" | "about" | "ai" | "pick" | "reveal" | "result";
-const IDLE_TIMEOUT_MS = 60000;
 
 export function KioskApp() {
   const [st, setSt] = useSettings();
@@ -154,20 +153,7 @@ export function KioskApp() {
     return () => clearTimeout(t);
   }, [screen, idlePhase]);
 
-  // Back to the start screen after a minute without a touch.
-  useEffect(() => {
-    if (screen === "idle" || screen === "reveal" || screen === "result") return;
-    let t = setTimeout(reset, IDLE_TIMEOUT_MS);
-    const bump = () => {
-      clearTimeout(t);
-      t = setTimeout(reset, IDLE_TIMEOUT_MS);
-    };
-    window.addEventListener("pointerdown", bump);
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener("pointerdown", bump);
-    };
-  }, [screen, reset]);
+  // No automatic return to the start screen: pages stay until someone moves on.
 
   // Result screen: print. It stays until the visitor or staff presses 終わる (no countdown).
   useEffect(() => {

@@ -893,17 +893,24 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .logolink:hover{transform:scale(1.04);filter:drop-shadow(0 0 12px rgba(255,160,60,.55))}
 .logolink:focus-visible{outline:2px solid #ffc86b;outline-offset:4px}
 
-/* letters scattered around the screen fly into place (あなたについて screen) */
+/* letters scattered around the screen fly into place (あなたについて screen), each in its own colour on the way */
 .scatter .scw{white-space:nowrap}
-.scatter .scl{display:inline-block;animation:sc-in 1.2s cubic-bezier(.16,.84,.24,1) both;will-change:transform,opacity}
+.scatter .scl{display:inline-block;animation:sc-in 2.2s cubic-bezier(.2,.7,.2,1) both;will-change:transform,opacity}
 @keyframes sc-in{
-  0%{opacity:0;transform:translate(var(--sx),var(--sy)) rotate(var(--sr)) scale(var(--ss));filter:blur(6px)}
-  25%{opacity:1}
+  0%{opacity:0;transform:translate(var(--sx),var(--sy)) rotate(var(--sr)) scale(var(--ss));filter:blur(5px);color:var(--sc);-webkit-text-fill-color:var(--sc);text-shadow:0 0 14px var(--sc)}
+  20%{opacity:1}
+  75%{color:var(--sc);-webkit-text-fill-color:var(--sc);text-shadow:0 0 10px var(--sc)}
   100%{opacity:1;transform:none;filter:none}
 }
-/* gradient title: each letter carries its own slice of the gradient */
+/* gradient title: each letter carries its own slice of the gradient; colour fades into the gradient at the end */
 :root body .khd h2:has(.scatter.grad){background:none!important;color:inherit!important;-webkit-text-fill-color:initial}
-:root body .khd h2 .scatter.grad .scl{background-image:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+:root body .khd h2 .scatter.grad .scl{background-image:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation-name:sc-in-grad}
+@keyframes sc-in-grad{
+  0%{opacity:0;transform:translate(var(--sx),var(--sy)) rotate(var(--sr)) scale(var(--ss));filter:blur(5px);-webkit-text-fill-color:var(--sc)}
+  20%{opacity:1}
+  75%{-webkit-text-fill-color:var(--sc)}
+  100%{opacity:1;transform:none;filter:none;-webkit-text-fill-color:transparent}
+}
 .kiosk[data-screen=about] .kchip{overflow:visible}
 @media(min-width:901px){.kiosk[data-screen=about] .kcard{overflow:visible}}
 @media(prefers-reduced-motion:reduce){.scatter .scl{animation:none}}

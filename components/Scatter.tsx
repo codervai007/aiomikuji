@@ -1,6 +1,9 @@
 "use client";
 import { useMemo, type CSSProperties } from "react";
 
+/** Colours the letters have while they fly in. */
+const COLORS = ["#ffd76a", "#ff9f43", "#ff5e62", "#ff6ad5", "#c56cf0", "#7c8cff", "#4dd9ff", "#6dffb0"];
+
 /**
  * Text whose letters start scattered around the screen and fly into place.
  * Letters get their random start once per text (re-renders don't restart them).
@@ -20,11 +23,12 @@ export function Scatter({ text, delay = 0, gradient = false }: { text: string; d
       }
       const r = Math.random;
       const style = {
+        "--sc": COLORS[Math.floor(r() * COLORS.length)],
         "--sx": `${(r() - 0.5) * 90}vw`,
         "--sy": `${(r() - 0.5) * 80}vh`,
         "--sr": `${(r() - 0.5) * 540}deg`,
         "--ss": (0.4 + r() * 1.4).toFixed(2),
-        animationDelay: `${(delay + r() * 0.35 + i * 0.015).toFixed(3)}s`,
+        animationDelay: `${(delay + r() * 0.6 + i * 0.025).toFixed(3)}s`,
         // Gradient titles: each letter shows its own slice of one gradient across the word.
         ...(gradient && n > 1 ? { backgroundSize: `${n * 100}% 100%`, backgroundPosition: `${(i / (n - 1)) * 100}% 0` } : {}),
       } as CSSProperties;
