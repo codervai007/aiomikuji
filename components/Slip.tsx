@@ -106,7 +106,7 @@ export function SlipBack({ data, qr }: { data: SlipData; qr: string }) {
         <span className="tag">{t("裏面")}</span>
         <span className="tag">{t("AIミニ解説")}</span>
       </div>
-      <h4>{t("あなたのおみくじを作った指示文")}</h4>
+      <h4>{t("AIにはこんな指示文を渡します")}</h4>
       <pre>{data.prompt}</pre>
       <h4>{t("AIを仕事で使うコツ")}</h4>
       <ul className="tiplist">
@@ -160,7 +160,7 @@ export function PrintSlip({ data, qr }: { data: SlipData | null; qr: string }) {
       ))}
       {data.win && <p className="p-win">{en ? "★ WIN ★ You won a mug! Show this slip to a staff member" : "★ 当たり ★ マグカップ当選！この紙をスタッフにお見せください"}</p>}
       <hr />
-      <p className="p-h">{t("この紙を作った指示文")}</p>
+      <p className="p-h">{t("AIにはこんな指示文を渡します")}</p>
       <pre className="p-pre">{data.prompt}</pre>
       <p className="p-h">{t("AIを仕事で使うコツ")}</p>
       {data.tips.map((tip) => (

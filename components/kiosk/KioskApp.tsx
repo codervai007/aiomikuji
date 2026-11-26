@@ -438,7 +438,7 @@ export function KioskApp() {
       )}
 
       {screen === "reveal" && draw && <Reveal fortune={draw.fortune} win={draw.win} onDone={() => setRevealDone(true)} />}
-      {screen === "reveal" && revealDone && !slip && <div className="waiting">{t("AIがおみくじを書いています…")}</div>}
+      {screen === "reveal" && revealDone && !slip && <div className="waiting">{t("おみくじを作っています…")}</div>}
 
       {screen === "result" && slip && (
         <main className="kpage resultpage">

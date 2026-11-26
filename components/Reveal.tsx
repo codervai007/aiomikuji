@@ -14,22 +14,33 @@ const DRAW_CLIPS = ["/media/draw-1.mp4", "/media/draw-2.mp4"];
  * The reveal, in two stages:
  *  1. draw   — a random /media/draw-*.mp4 (box shakes, stick flies, white flash)
  *  2. reveal — /media/reveal-<slug>.mp4 for the fortune, or a built-in title animation
+ *  3. win    — only when a mug was won: /media/win.mp4 with the 「マグカップ当選！」 banner
  * Each stage falls back gracefully when its video is missing or can't play.
  */
 export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean; onDone: () => void }) {
   const info = FORTUNE_INFO[fortune];
   const [drawSrc] = useState(() => DRAW_CLIPS[Math.floor(rnd() * DRAW_CLIPS.length)]);
-  const [stage, setStage] = useState<"draw" | "reveal">("draw");
+  const [stage, setStage] = useState<"draw" | "reveal" | "win">("draw");
   const [revealVideo, setRevealVideo] = useState(true);
   const [showTitle, setShowTitle] = useState(false);
   const [flash, setFlash] = useState(false);
   const done = useRef(false);
   const vid = useRef<HTMLVideoElement>(null);
 
-  const finish = () => {
+  const end = () => {
     if (done.current) return;
     done.current = true;
     onDone();
+  };
+  // After the fortune reveal: a mug winner gets the win clip first.
+  const finish = () => {
+    if (done.current) return;
+    if (win && stage !== "win") {
+      setStage("win");
+      sfx.fanfare();
+      return;
+    }
+    end();
   };
   const toReveal = () => {
     if (stage !== "draw") return;
@@ -40,7 +51,7 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
 
   // Safety net per stage, in case a video stalls.
   useEffect(() => {
-    const t = setTimeout(stage === "draw" ? toReveal : finish, 9000);
+    const t = setTimeout(stage === "draw" ? toReveal : stage === "win" ? end : finish, stage === "win" ? 12000 : 9000);
     return () => clearTimeout(t);
   }, [stage]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -71,7 +82,7 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
   };
 
   const skip = (
-    <button className="skip" onClick={finish}>
+    <button className="skip" onClick={end}>
       {t("スキップ")}
     </button>
   );
@@ -81,6 +92,16 @@ export function Reveal({ fortune, win, onDone }: { fortune: string; win: boolean
     return (
       <div className="reveal video">
         <video key="draw" ref={vid} className="fullvid" src={drawSrc} playsInline onCanPlay={play} onEnded={toReveal} onError={toReveal} />
+        {skip}
+      </div>
+    );
+  }
+
+  if (stage === "win") {
+    return (
+      <div className="reveal video winclip">
+        <video key="win" ref={vid} className="fullvid" src="/media/win.mp4" playsInline autoPlay onCanPlay={play} onEnded={end} onError={end} />
+        <p className="vwin winbanner">{t("マグカップ当選！")}</p>
         {skip}
       </div>
     );

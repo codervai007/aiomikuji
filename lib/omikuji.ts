@@ -1,5 +1,6 @@
 // Shared omikuji logic: used by the page (browser) and the API route (server).
 import { FORTUNE_EN, tr, type Lang } from "./i18n";
+import POOL from "./lines.json";
 
 export const FORTUNES: [string, number][] = [
   ["大大吉", 10],
@@ -138,9 +139,34 @@ export function templateText(dept = "", match = "", lang: Lang = "ja"): string {
       lines.push(`Career: ${MATCH_TEMPLATES_EN[Math.floor(rnd() * MATCH_TEMPLATES_EN.length)].replace("{d}", tr("en", dept)).replace("{m}", tr("en", match))}`);
     return lines.join("\n");
   }
-  const lines = KEYS.map((k) => `${k}：${TEMPLATES[k][Math.floor(rnd() * TEMPLATES[k].length)]}`);
-  if (dept && match) lines.push(`${MATCH_KEY}：${dept}${MATCH_TEMPLATES[Math.floor(rnd() * MATCH_TEMPLATES.length)].replace("{m}", match)}`);
+  const pool = POOL.lines as Record<string, string[]>;
+  const lines = KEYS.map((k) => `${k}：${pickFresh(k, pool[k]?.length ? pool[k] : TEMPLATES[k])}`);
+  if (dept && match) lines.push(`${MATCH_KEY}：${pickFresh(MATCH_KEY, POOL.match).replace("{d}", dept).replace("{m}", match)}`);
   return lines.join("\n");
+}
+
+/**
+ * Picks a line that hasn't been shown yet on this booth PC (kept in localStorage), so ~200 visitors
+ * never see a repeat. When every line of a pool has been used, the pool starts over.
+ */
+function pickFresh(key: string, list: string[]): string {
+  const any = () => list[Math.floor(rnd() * list.length)];
+  if (typeof window === "undefined") return any();
+  const store = "omikuji-used-" + key;
+  try {
+    const used = new Set<number>(JSON.parse(localStorage.getItem(store) || "[]"));
+    let free = list.map((_, i) => i).filter((i) => !used.has(i));
+    if (!free.length) {
+      used.clear();
+      free = list.map((_, i) => i);
+    }
+    const i = free[Math.floor(rnd() * free.length)];
+    used.add(i);
+    localStorage.setItem(store, JSON.stringify([...used]));
+    return list[i];
+  } catch {
+    return any();
+  }
 }
 
 export function parseFortune(t: string, lang: Lang = "ja"): FortuneText {
