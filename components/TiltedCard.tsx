@@ -1,6 +1,6 @@
 "use client";
-import { useState, type ReactNode, type PointerEvent } from "react";
-import { motion, useMotionTemplate, useMotionValue, useSpring } from "motion/react";
+import { useEffect, useRef, useState, type ReactNode, type PointerEvent } from "react";
+import { animate, motion, useMotionTemplate, useMotionValue, useSpring } from "motion/react";
 
 const SPRING = { damping: 30, stiffness: 120, mass: 1.6 };
 
@@ -62,6 +62,29 @@ export default function TiltedCard({
   const [hover, setHover] = useState(false);
   const [innerFlip, setInnerFlip] = useState(false);
   const isFlipped = flipped ?? innerFlip;
+  // Flip in two halves (turn to edge-on, swap the face, turn back) and only ever render one face.
+  // Real 3D back faces show mirrored on iPhone Safari, where the shadow filter flattens 3D.
+  const [side, setSide] = useState(isFlipped);
+  const flipRot = useMotionValue(0);
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    let stop = false;
+    const out = animate(flipRot, 90, { duration: 0.18, ease: "easeIn" });
+    out.then(() => {
+      if (stop) return;
+      setSide(isFlipped);
+      flipRot.set(-90);
+      animate(flipRot, 0, { type: "spring", stiffness: 260, damping: 22 });
+    });
+    return () => {
+      stop = true;
+      out.stop();
+    };
+  }, [isFlipped]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const glareBg = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,${glare}) 0%, rgba(255,255,255,0) 55%)`;
 
@@ -117,8 +140,8 @@ export default function TiltedCard({
           filter: shadow > 0 && hover ? `drop-shadow(0 28px 40px rgba(0,0,0,${shadow}))` : `drop-shadow(0 12px 24px rgba(0,0,0,${shadow * 0.6}))`,
         }}
       >
-        <motion.div className="tc-flip" animate={{ rotateY: isFlipped ? 180 : 0 }} transition={{ type: "spring", stiffness: 110, damping: 16 }}>
-          <div className="tc-face tc-front" style={{ borderRadius: radius }}>
+        <motion.div className="tc-flip" style={{ rotateY: flipRot }}>
+          <div className="tc-face tc-front" style={{ borderRadius: radius, display: side && backContent ? "none" : undefined }}>
             {imageSrc && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={imageSrc} alt={altText} className="tc-img" style={{ borderRadius: radius }} />
@@ -126,7 +149,7 @@ export default function TiltedCard({
             {children}
             {glare > 0 && <motion.div className="tc-glare" style={{ background: glareBg, opacity: glareOpacity, borderRadius: radius }} />}
           </div>
-          {backContent && (
+          {backContent && side && (
             <div className="tc-face tc-back" style={{ borderRadius: radius }}>
               {backContent}
               {glare > 0 && <motion.div className="tc-glare" style={{ background: glareBg, opacity: glareOpacity, borderRadius: radius }} />}

@@ -966,3 +966,7 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 @keyframes winbanner{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
 .testbadge{margin-left:auto;padding:6px 12px;border-radius:999px;background:#ffcc33;color:#1a1200;font:800 13px/1 "M PLUS 1",sans-serif;letter-spacing:.04em}
 .kbar .testbadge + .langtoggle{margin-left:0}
+/* the flip renders one face at a time, so the back is not pre-rotated */
+.tc-back{transform:none!important}
+.tc-face{backface-visibility:visible;-webkit-backface-visibility:visible}
+@media(max-width:900px){.kiosk .resslip,.kiosk .resslip .tc,.kiosk .resslip .tc-inner,.kiosk .resslip .slip{max-height:none!important;height:auto!important}}
