@@ -38,7 +38,9 @@ export function MonitorApp() {
         <div>
           <p className="pill">IT Connect Fes 2026 ・ IT統括部 アプリケーションサポート</p>
           <h1 className="mtitle">
+            <a href="/" className="logolink" aria-label="ホームへ戻る">
             <LogoImage height={110} />
+          </a>
             <span>裏側モニター</span>
           </h1>
         </div>

@@ -29,7 +29,6 @@ import { FORTUNE_EN, tr, type Lang } from "@/lib/i18n";
 import { LangProvider, LangToggle } from "@/lib/useLang";
 
 type Screen = "idle" | "about" | "ai" | "pick" | "reveal" | "result";
-const PROGRESS: Screen[] = ["about", "ai", "pick", "result"];
 const IDLE_TIMEOUT_MS = 60000;
 
 export function KioskApp() {
@@ -250,7 +249,6 @@ export function KioskApp() {
   };
 
   const mugsLeft = Math.max(0, st.mugs - st.won);
-  const stepIdx = PROGRESS.indexOf(screen);
 
   return (
     <LangProvider value={lang}>
@@ -258,14 +256,9 @@ export function KioskApp() {
       {screen !== "idle" && screen !== "reveal" && <BgVideo />}
       {screen !== "idle" && screen !== "reveal" && (
         <header className="kbar">
-          <LogoImage height={64} />
-          <ol className="dots" aria-label={t("すすみ具合")}>
-            {PROGRESS.map((p, i) => (
-              <li key={p} data-on={i <= stepIdx}>
-                {t(["あなた", "AI", "引き出し", "結果"][i])}
-              </li>
-            ))}
-          </ol>
+          <a href="/" className="logolink" aria-label="ホームへ戻る">
+            <LogoImage height={64} />
+          </a>
           <LangToggle lang={lang} onChange={(l) => (sfx.tap(), setLang(l))} />
           <span className="counter">
             <span>{t("当たり残り")}</span>

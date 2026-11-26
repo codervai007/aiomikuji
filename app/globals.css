@@ -888,3 +888,7 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 :root body .resside .homelink span{color:#ffc86b}
 :root body .resside .homelink:hover{background:rgba(255,170,60,.22);box-shadow:0 0 26px rgba(255,140,60,.45);transform:translateY(-1px)}
 :root body .resside .homelink{border-radius:999px!important}
+/* logo goes to the home page */
+.logolink{display:inline-flex;flex:none;border-radius:12px;transition:transform .2s,filter .2s}
+.logolink:hover{transform:scale(1.04);filter:drop-shadow(0 0 12px rgba(255,160,60,.55))}
+.logolink:focus-visible{outline:2px solid #ffc86b;outline-offset:4px}
