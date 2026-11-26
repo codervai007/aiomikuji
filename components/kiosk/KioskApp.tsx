@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  FORTUNE_INFO,
   AGES,
   AI_USE,
   GENDERS,
@@ -28,6 +29,7 @@ import { FortuneName, PrintSlip, SlipBack, SlipFront, useGuideQr, type SlipData 
 import { FORTUNE_EN, tr, type Lang } from "@/lib/i18n";
 import { LangProvider, LangToggle } from "@/lib/useLang";
 import { Scatter } from "../Scatter";
+import { TitleVideo } from "../TitleVideo";
 
 type Screen = "idle" | "about" | "ai" | "pick" | "reveal" | "result";
 
@@ -464,9 +466,17 @@ export function KioskApp() {
           </div>
           <aside className="resside">
             <p className="reslabel">{t("あなたの運勢は")}</p>
-            <p className={`resluck t3d ${slip.fortune === "大大吉" ? "daidaikichi" : slip.fortune === "大吉" ? "daikichi" : "chukichi"}`}>
-              <FortuneName fortune={slip.fortune} />
-            </p>
+            <p className="resreading">{en ? FORTUNE_EN[slip.fortune]?.romaji : FORTUNE_INFO[slip.fortune]?.reading}</p>
+            <TitleVideo
+              key={slip.no + slip.fortune}
+              slug={FORTUNE_INFO[slip.fortune]?.slug ?? "chukichi"}
+              label={slip.fortune}
+              fallback={
+                <p className={`resluck t3d ${FORTUNE_INFO[slip.fortune]?.slug ?? ""}`}>
+                  <FortuneName fortune={slip.fortune} />
+                </p>
+              }
+            />
             {en && <p className="resen">{FORTUNE_EN[slip.fortune]?.name}</p>}
             {slip.win ? (
               <div className="reswin">
