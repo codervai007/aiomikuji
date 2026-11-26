@@ -16,7 +16,7 @@ export const FORTUNE_INFO: Record<string, { slug: string; reading: string; color
 };
 
 export const GENDERS = ["女性", "男性", "その他", "回答しない"] as const;
-export const AGES = ["10代", "20代", "30代", "40代", "50代", "60代以上"] as const;
+export const AGES = ["10代", "20代", "30代", "40代", "50代", "60代", "70代以上"] as const;
 export const AI_USE = ["毎日使っている", "ときどき使う", "試したことがある", "使ったことがない"] as const;
 export const AI_USE_COLS = [...AI_USE, "未回答"] as const;
 
