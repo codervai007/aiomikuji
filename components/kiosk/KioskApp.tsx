@@ -193,9 +193,10 @@ export function KioskApp() {
     const no = pick;
 
     // Fortune and win come from the random generator, never from the AI.
-    const fortune = drawFortune();
+    // Win first; a mug winner always gets 大大吉 (and only winners do).
     const mugsLeft = Math.max(0, st.mugs - st.won);
     const win = testWin || (mugsLeft > 0 && rnd() < mugsLeft / Math.max(1, st.expected - st.drawn));
+    const fortune = drawFortune(win);
     if (!testWin) setSt((s) => ({
       ...s,
       drawn: s.drawn + 1,

@@ -76,9 +76,15 @@ export function kan(n: number): string {
   return (n >= 20 ? K[Math.floor(n / 10)] : "") + (n >= 10 ? "十" : "") + (n % 10 ? K[n % 10] : "");
 }
 
-export function drawFortune(): string {
-  let r = rnd() * 100;
-  for (const [f, w] of FORTUNES) {
+/**
+ * 大大吉 is the jackpot: it is given to mug winners, and only to them.
+ * Everyone else draws 大吉 or 中吉 by their weights.
+ */
+export function drawFortune(win = false): string {
+  if (win) return "大大吉";
+  const rest = FORTUNES.filter(([f]) => f !== "大大吉");
+  let r = rnd() * rest.reduce((n, [, w]) => n + w, 0);
+  for (const [f, w] of rest) {
     if ((r -= w) < 0) return f;
   }
   return "中吉";
