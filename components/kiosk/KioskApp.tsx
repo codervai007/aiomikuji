@@ -27,6 +27,7 @@ import TiltedCard from "../TiltedCard";
 import { FortuneName, PrintSlip, SlipBack, SlipFront, useGuideQr, type SlipData } from "../Slip";
 import { FORTUNE_EN, tr, type Lang } from "@/lib/i18n";
 import { LangProvider, LangToggle } from "@/lib/useLang";
+import { Scatter } from "../Scatter";
 
 type Screen = "idle" | "about" | "ai" | "pick" | "reveal" | "result";
 const IDLE_TIMEOUT_MS = 60000;
@@ -342,13 +343,17 @@ export function KioskApp() {
       {screen === "about" && (
         <main className="kpage">
           <div className="khd">
-            <h2>{t("あなたについて")}</h2>
-            <p>{t("わかる範囲でOKです。名前は入力しません。")}</p>
+            <h2>
+              <Scatter text={t("あなたについて")} gradient />
+            </h2>
+            <p>
+              <Scatter text={t("わかる範囲でOKです。名前は入力しません。")} delay={0.1} />
+            </p>
           </div>
           <div className="kcard">
-            <Row label={t("性別")} t={t} items={[...GENDERS]} value={gender} onPick={setGender} />
-            <Row label={t("年齢（任意）")} t={t} items={["答えない", ...AGES]} value={age || "答えない"} onPick={(v) => setAge(v === "答えない" ? "" : v)} />
-            <Row label={t("職種")} t={t} items={["回答しない", ...st.depts]} value={dept || "回答しない"} onPick={(v) => setDept(v === "回答しない" ? "" : v)} />
+            <Row scatter={0.15} label={t("性別")} t={t} items={[...GENDERS]} value={gender} onPick={setGender} />
+            <Row scatter={0.25} label={t("年齢（任意）")} t={t} items={["答えない", ...AGES]} value={age || "答えない"} onPick={(v) => setAge(v === "答えない" ? "" : v)} />
+            <Row scatter={0.35} label={t("職種")} t={t} items={["回答しない", ...st.depts]} value={dept || "回答しない"} onPick={(v) => setDept(v === "回答しない" ? "" : v)} />
           </div>
           <nav className="knav">
             <button className="btn big" onClick={() => go("idle")}>
@@ -507,10 +512,26 @@ export function KioskApp() {
   );
 }
 
-function Row({ label, items, value, onPick, t }: { label: string; items: string[]; value: string; onPick: (v: string) => void; t: (s: string) => string }) {
+function Row({
+  label,
+  items,
+  value,
+  onPick,
+  t,
+  scatter,
+}: {
+  label: string;
+  items: string[];
+  value: string;
+  onPick: (v: string) => void;
+  t: (s: string) => string;
+  /** When set, letters fly into place starting after this many seconds. */
+  scatter?: number;
+}) {
+  const sc = (text: string) => (scatter === undefined ? text : <Scatter text={text} delay={scatter} />);
   return (
     <div className="krow">
-      <p className="q">{label}</p>
+      <p className="q">{sc(label)}</p>
       <div className="kchips">
         {items.map((it) => (
           <button
@@ -522,7 +543,7 @@ function Row({ label, items, value, onPick, t }: { label: string; items: string[
               onPick(it);
             }}
           >
-            {t(it)}
+            {sc(t(it))}
           </button>
         ))}
       </div>
