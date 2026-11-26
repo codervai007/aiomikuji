@@ -220,7 +220,7 @@ export function KioskApp() {
     const input = { fortune, age, gender, dept, match, lang };
     const prompt = buildPrompt(input);
     pushMon({ phase: "drawing", steps: IDLE_STEPS, prompt: "", answer: "", checks: "", fortune, win, no });
-    setStep(0, "done", `第${kan(no)}番 ・ ${dept || "部署未回答"}`);
+    setStep(0, "done", `第${kan(no)}番 ・ ${dept || "職種未回答"}`);
     setStep(1, "done", `${fortune}${win ? " ・ 当たり" : ""}${match ? ` ・ 適職：${match}` : ""}`);
     pushMon({ prompt });
     setStep(2, "done", "差し込み完了");
@@ -355,7 +355,7 @@ export function KioskApp() {
           <div className="kcard">
             <Row label={t("性別")} t={t} items={[...GENDERS]} value={gender} onPick={setGender} />
             <Row label={t("年齢（任意）")} t={t} items={["答えない", ...AGES]} value={age || "答えない"} onPick={(v) => setAge(v === "答えない" ? "" : v)} />
-            <Row label={t("部署")} t={t} items={["回答しない", ...st.depts]} value={dept || "回答しない"} onPick={(v) => setDept(v === "回答しない" ? "" : v)} />
+            <Row label={t("職種")} t={t} items={["回答しない", ...st.depts]} value={dept || "回答しない"} onPick={(v) => setDept(v === "回答しない" ? "" : v)} />
           </div>
           <nav className="knav">
             <button className="btn big" onClick={() => go("idle")}>

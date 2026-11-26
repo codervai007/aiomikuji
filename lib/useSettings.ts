@@ -11,6 +11,8 @@ export type Settings = {
   tips: number[];
   tipMode: "random" | "fixed";
   depts: string[];
+  /** Bumped when the default choice list changes, so old saved lists are replaced. */
+  deptsV: number;
   log: LogRow[];
   sound: boolean;
   autoPrint: boolean;
@@ -28,6 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
   tips: TIPS.map((_, i) => i),
   tipMode: "random",
   depts: DEFAULT_DEPTS,
+  deptsV: 2,
   log: [],
   sound: true,
   autoPrint: false,
@@ -48,7 +51,9 @@ export function sanitize(raw: unknown): Settings {
     won: num(s.won, 0),
     tips: Array.isArray(s.tips) ? s.tips.filter((i) => Number.isInteger(i) && i >= 0 && i < TIPS.length) : DEFAULT_SETTINGS.tips,
     tipMode: s.tipMode === "fixed" ? "fixed" : "random",
-    depts: Array.isArray(s.depts) && s.depts.length ? s.depts.map(String).slice(0, 40) : DEFAULT_DEPTS,
+    // v2 switched 部署 to 職種: lists saved before that are replaced by the new defaults.
+    depts: (raw as { deptsV?: unknown } | null)?.deptsV === 2 && Array.isArray(s.depts) && s.depts.length ? s.depts.map(String).slice(0, 40) : DEFAULT_DEPTS,
+    deptsV: 2,
     log: Array.isArray(s.log) ? s.log.slice(-3000) : [],
     sound: s.sound !== false,
     autoPrint: s.autoPrint === true,

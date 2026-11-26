@@ -29,7 +29,7 @@ export function StaffPanel({ st, setSt, open = false }: { st: Settings; setSt: D
   }, [st.log, st.depts]);
 
   const csv = () =>
-    "時刻,部署,AIの利用,運勢,当たり\n" +
+    "時刻,職種,AIの利用,運勢,当たり\n" +
     st.log
       .map((r) => [new Date(r.t).toLocaleString("ja-JP"), r.dept, r.ai, r.f, r.win ? "当たり" : ""].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
       .join("\n");
@@ -107,11 +107,11 @@ export function StaffPanel({ st, setSt, open = false }: { st: Settings; setSt: D
             ))}
           </ul>
 
-          <h3>部署リスト</h3>
-          <p className="small">1行に1部署。欄の外をタップすると、プルダウンに反映されます（「回答しない」は自動で付きます）。</p>
+          <h3>職種リスト</h3>
+          <p className="small">1行に1職種。欄の外をタップすると、プルダウンに反映されます（「回答しない」は自動で付きます）。</p>
           <textarea
             rows={8}
-            aria-label="部署リスト"
+            aria-label="職種リスト"
             value={deptDraft}
             onChange={(e) => setDeptDraft(e.target.value)}
             onBlur={() => {
@@ -120,7 +120,7 @@ export function StaffPanel({ st, setSt, open = false }: { st: Settings; setSt: D
             }}
           />
 
-          <h3>アンケート集計（AIの利用 × 部署）</h3>
+          <h3>アンケート集計（AIの利用 × 職種）</h3>
           <p className="small">
             {st.log.length
               ? `回答 ${tally.answered}人のうち、業務でAIを使っている（毎日＋ときどき）：${tally.used}人（${tally.answered ? Math.round((tally.used / tally.answered) * 100) : 0}%）`
@@ -130,7 +130,7 @@ export function StaffPanel({ st, setSt, open = false }: { st: Settings; setSt: D
             <table className="tally">
               <tbody>
                 <tr>
-                  <th>部署</th>
+                  <th>職種</th>
                   {AI_USE_COLS.map((a) => (
                     <th key={a}>{a}</th>
                   ))}
@@ -162,7 +162,7 @@ export function StaffPanel({ st, setSt, open = false }: { st: Settings; setSt: D
             <span className="small">{copyMsg}</span>
           </div>
           {csvShown && <textarea rows={6} readOnly value={csvShown} aria-label="CSV" />}
-          <p className="small">記録するのは時刻・部署・AIの利用・運勢・当たりだけです（性別・年齢は記録しません）。</p>
+          <p className="small">記録するのは時刻・職種・AIの利用・運勢・当たりだけです（性別・年齢は記録しません）。</p>
     </>
   );
 

@@ -16,11 +16,12 @@ export const FORTUNE_INFO: Record<string, { slug: string; reading: string; color
 };
 
 export const GENDERS = ["女性", "男性", "その他", "回答しない"] as const;
-export const AGES = ["10代", "20代", "30代", "40代", "50代", "60代", "70代以上"] as const;
+export const AGES = ["20代", "30代", "40代", "50代", "60代", "70代"] as const;
 export const AI_USE = ["毎日使っている", "ときどき使う", "試したことがある", "使ったことがない"] as const;
 export const AI_USE_COLS = [...AI_USE, "未回答"] as const;
 
-export const DEFAULT_DEPTS = ["総務", "人事", "経理・財務", "営業", "工場", "工事・現場", "設計", "購買・調達", "IT統括部", "その他"];
+/** 職種 (job type) choices. The name DEFAULT_DEPTS is kept so saved settings and code stay compatible. */
+export const DEFAULT_DEPTS = ["営業系", "事務・管理系", "企画・マーケティング系", "IT・エンジニア系", "技術・研究・製造系", "クリエイティブ系", "販売・サービス系"];
 
 export const TIPS = [
   "個人情報・社外秘は入力しない",
@@ -104,8 +105,8 @@ export function buildPrompt({ fortune, age, gender, dept, match, lang = "ja" }: 
     const d = tr("en", dept);
     const m = tr("en", match ?? "");
     return `You are an omikuji (Japanese fortune slip) writer.
-Fortune: ${fortune} (${FORTUNE_EN[fortune]?.name ?? ""})  Visitor: ${age ? tr("en", age) : "age not given"} · ${tr("en", gender)}  Department: ${d || "not given"}${withMatch ? `  Matching department: ${m}` : ""}
-Write Work, Health and Message in English, each one positive sentence of at most 80 characters.${dept ? "\nMake Work fit the work of that department." : ""}${
+Fortune: ${fortune} (${FORTUNE_EN[fortune]?.name ?? ""})  Visitor: ${age ? tr("en", age) : "age not given"} · ${tr("en", gender)}  Job type: ${d || "not given"}${withMatch ? `  Matching job type: ${m}` : ""}
+Write Work, Health and Message in English, each one positive sentence of at most 80 characters.${dept ? "\nMake Work fit that kind of job." : ""}${
       withMatch ? `\nFor Career, say that someone in ${d} would also do well in ${m}, with a positive reason, in at most 110 characters. Always include "${m}".` : ""
     }
 Don't make assumptions based on gender or age, and give no medical advice.
@@ -115,9 +116,9 @@ Health:
 Message:${withMatch ? "\nCareer:" : ""}`;
   }
   return `あなたはおみくじ作家です。
-運勢：${fortune}　対象：${age || "年齢未回答"}・${gender}　部署：${dept || "未回答"}${withMatch ? `　相性のいい部署：${match}` : ""}
-仕事運・健康運・ひとことを、各30字以内で前向きな言葉で書いてください。${dept ? "\n仕事運は、その部署の仕事に合う内容にしてください。" : ""}${
-    withMatch ? `\n適職運は「${dept}のあなたは、${match}にも向いています」という内容を、前向きな理由を添えて40字以内で書いてください。「${match}」を必ず入れてください。` : ""
+運勢：${fortune}　対象：${age || "年齢未回答"}・${gender}　職種：${dept || "未回答"}${withMatch ? `　相性のいい職種：${match}` : ""}
+仕事運・健康運・ひとことを、各30字以内で前向きな言葉で書いてください。${dept ? "\n仕事運は、その職種の仕事に合う内容にしてください。" : ""}${
+    withMatch ? `\n適職運は「${dept}のあなたは、${match}にも向いています」という内容を、前向きな理由を添えて50字以内で書いてください。「${match}」を必ず入れてください。` : ""
   }
 性別や年齢による決めつけはせず、医療的な助言はしないでください。
 出力は次の${withMatch ? 4 : 3}行だけにしてください。
@@ -164,7 +165,7 @@ export function checkFortune(o: FortuneText, match = "", lang: Lang = "ja"): str
     const name = tr(lang, match);
     if (!m) return "適職運がありません";
     if (!m.toLowerCase().includes(name.toLowerCase())) return `適職運に「${name}」が入っていません`;
-    if ([...m].length > (en ? 140 : 45)) return "適職運が長すぎます";
+    if ([...m].length > (en ? 140 : 55)) return "適職運が長すぎます";
   }
   const all = ([...KEYS, MATCH_KEY] as LineKey[]).map((k) => o[k] ?? "").join(en ? " " : "").toLowerCase() + " ";
   const bad = (en ? NG_WORDS_EN : NG_WORDS).find((w) => all.includes(w));
