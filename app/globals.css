@@ -878,3 +878,6 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 :root body .home .herocard .lead{font-family:"Shippori Mincho B1","Yu Mincho",serif!important;font-weight:600;font-size:clamp(18px,1.6vw,22px);line-height:1.9;letter-spacing:.06em;color:#e9dcc8!important}
 /* hero clip: thinner side fade so the last letter (じ) isn't faded out */
 .home .herovidwrap{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 12%,#000 88%,transparent 100%)!important;mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 12%,#000 88%,transparent 100%)!important}
+.resside .homelink{display:inline-flex;align-items:center;gap:8px;margin-top:14px;align-self:center;text-decoration:none;font-size:17px;font-weight:700;color:rgba(255,236,210,.85);padding:8px 14px;border-radius:999px}
+.resside .homelink:hover{background:rgba(255,255,255,.08);color:#fff}
+.resside .homelink span{font-size:20px}

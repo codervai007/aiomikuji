@@ -76,6 +76,7 @@ const EN: Record<string, string> = {
   表を見る: "See the front",
   "裏（AIミニ解説）を見る": "See the back (AI tips)",
   おわる: "Finish",
+  ホームへもどる: "Back to home",
   // slip
   AIおみくじ: "AI Omikuji",
   運勢: "Fortune",

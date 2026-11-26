@@ -501,6 +501,9 @@ export function KioskApp() {
                 {t("おわる")}
               </button>
             </div>
+            <a className="linkbtn homelink" href="/" onClick={() => sfx.tap()}>
+              <span aria-hidden>⌂</span> {t("ホームへもどる")}
+            </a>
           </aside>
         </main>
       )}
