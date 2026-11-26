@@ -23,13 +23,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div id="boot" aria-label="読み込み中" role="status">
           <video className="boot-vid" src="/media/boot-fire.mp4" poster="/media/boot-fire.jpg" autoPlay muted loop playsInline preload="auto" aria-hidden />
-          <p className="boot-word" aria-label="AIおみくじ">
-            {Array.from("おみくじ").map((c, i) => (
-              <span key={i} style={{ "--i": i } as React.CSSProperties} aria-hidden>
-                {c}
-              </span>
-            ))}
-          </p>
           <span className="boot-dots">
             <i />
             <i />
