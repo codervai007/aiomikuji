@@ -45,7 +45,6 @@ export function KioskApp() {
   const [slip, setSlip] = useState<SlipData | null>(null);
   const [revealDone, setRevealDone] = useState(false);
   const [showBack, setShowBack] = useState(false);
-  const [left, setLeftSec] = useState(0);
   const [aiReady, setAiReady] = useState(false);
   const [idleVideo, setIdleVideo] = useState(true);
   const [idleReady, setIdleReady] = useState(false);
@@ -170,24 +169,19 @@ export function KioskApp() {
     };
   }, [screen, reset]);
 
-  // Result screen: print, then count down and reset.
+  // Result screen: print. It stays until the visitor or staff presses おわる (no countdown).
   useEffect(() => {
-    if (screen !== "result") return;
-    if (st.autoPrint) setTimeout(() => window.print(), 700);
-    const iv = setInterval(() => setLeftSec((n) => n - 1), 1000);
-    return () => clearInterval(iv);
+    if (screen !== "result" || !st.autoPrint) return;
+    const t = setTimeout(() => window.print(), 700);
+    return () => clearTimeout(t);
   }, [screen]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (screen === "result" && left <= 0) reset();
-  }, [left, screen, reset]);
 
   // Move to the result once both the reveal and the AI text are finished.
   useEffect(() => {
     if (screen === "reveal" && revealDone && slip) {
-      setLeftSec(st.resetSeconds);
       setScreen("result");
     }
-  }, [screen, revealDone, slip, st.resetSeconds]);
+  }, [screen, revealDone, slip]);
 
   const go = (s: Screen) => {
     sfx.tap();
@@ -507,7 +501,6 @@ export function KioskApp() {
                 {t("おわる")}
               </button>
             </div>
-            <p className="rescount">{en ? `Back to the start in ${Math.max(0, left)} s` : `あと ${Math.max(0, left)} 秒で最初の画面にもどります`}</p>
           </aside>
         </main>
       )}

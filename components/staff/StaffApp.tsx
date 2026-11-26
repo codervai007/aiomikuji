@@ -92,16 +92,6 @@ export function StaffApp() {
               <input type="checkbox" checked={st.autoPrint} onChange={(e) => setSt((s) => ({ ...s, autoPrint: e.target.checked }))} />
               結果画面で自動印刷する
             </label>
-            <label>
-              結果画面から戻るまで（秒）
-              <input
-                type="number"
-                min={5}
-                max={120}
-                value={st.resetSeconds}
-                onChange={(e) => setSt((s) => ({ ...s, resetSeconds: Math.min(120, Math.max(5, Number(e.target.value) || 20)) }))}
-              />
-            </label>
           </div>
           <p className="small">
             自動印刷は Chrome を <code>--kiosk --kiosk-printing</code> で起動すると、印刷ダイアログなしで既定のプリンター（80mmサーマル推奨）に出ます。
