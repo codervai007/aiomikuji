@@ -857,3 +857,13 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
   .kiosk .resslip{width:min(100%,440px)!important;flex:none!important;padding:16px!important}
   .kiosk .resside{width:100%}
 }
+
+/* loader: burning "AI" clip above the waving おみくじ letters */
+#boot{gap:6px}
+#boot .boot-vid{display:block;width:min(78vw,560px);aspect-ratio:640/368;height:auto;object-fit:cover;background:#000 url(/media/boot-fire.jpg) center/cover no-repeat;
+  -webkit-mask-image:radial-gradient(ellipse 58% 62% at 50% 52%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 58% 62% at 50% 52%,#000 55%,transparent 100%);
+  animation:boot-vid-in .6s ease-out both}
+#boot .boot-word{margin-top:-28px}
+@keyframes boot-vid-in{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+#boot .boot-vid{-webkit-mask-image:radial-gradient(ellipse 50% 48% at 50% 50%,#000 45%,transparent 100%);mask-image:radial-gradient(ellipse 50% 48% at 50% 50%,#000 45%,transparent 100%)}
+#boot .boot-dots{margin-top:14px}

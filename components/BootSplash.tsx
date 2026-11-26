@@ -19,7 +19,7 @@ export function BootSplash() {
     };
     const pageReady = new Promise<void>((r) => (document.readyState === "complete" ? r() : window.addEventListener("load", () => r(), { once: true })));
     const fontsReady = document.fonts?.ready ?? Promise.resolve();
-    const v = document.querySelector<HTMLVideoElement>("video");
+    const v = document.querySelector<HTMLVideoElement>("video:not(.boot-vid)");
     const videoReady = new Promise<void>((r) => {
       if (!v || v.readyState >= 3) return r();
       v.addEventListener("canplay", () => r(), { once: true });
