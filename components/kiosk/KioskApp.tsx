@@ -133,17 +133,17 @@ export function KioskApp() {
     if (st.sound && !audioAllowed()) setSoundBlocked(true);
   }, [st.sound]);
 
-  const enableSound = () => {
-    unlockAudio();
-    setSoundBlocked(false);
-    // Play the intro again from the start, now with sound.
-    const v = document.querySelector<HTMLVideoElement>(".idlevid");
-    if (idlePhase === "intro" && v) {
-      v.currentTime = 0;
-      v.muted = false;
-      void v.play().catch(() => {});
-    } else setIdlePhase("intro");
-  };
+  // No sound button: the first touch anywhere unlocks sound for the rest of the session.
+  useEffect(() => {
+    if (!soundBlocked) return;
+    const onTouch = () => {
+      unlockAudio();
+      setSoundBlocked(false);
+    };
+    window.addEventListener("pointerdown", onTouch, { once: true });
+    return () => window.removeEventListener("pointerdown", onTouch);
+  }, [soundBlocked]);
+
 
   // A video that failed before the page finished loading never fires onError; check it directly.
   useEffect(() => {
@@ -351,11 +351,6 @@ export function KioskApp() {
         </button>
       )}
       {screen === "idle" && <LangToggle className="idlelang" lang={lang} onChange={(l) => (unlockAudio(), sfx.tap(), setLang(l))} />}
-      {screen === "idle" && st.sound && soundBlocked && (
-        <button type="button" className="soundbtn" onClick={enableSound} aria-label={t("音を出す")}>
-          <span aria-hidden>🔊</span> {t("音を出す")}
-        </button>
-      )}
 
       {screen === "about" && (
         <main className="kpage">
