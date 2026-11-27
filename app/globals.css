@@ -979,3 +979,17 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .back .howarrow{margin:0;text-align:center;font-size:20px;line-height:1;color:#ff9a4a}
 .back .howout{margin:0;padding:10px 12px;list-style:none;display:grid;gap:6px;border-radius:14px;border:1px solid rgba(255,170,90,.45);background:rgba(255,140,60,.08);font-size:14px;line-height:1.5}
 .back .howout b{display:block;font-size:12px;color:rgba(255,226,200,.75)}
+
+/* result screen: QR to open the slip on a phone */
+.resqr{display:flex;align-items:center;gap:14px;margin-top:16px;padding:10px 14px 10px 10px;border-radius:16px;border:1px solid rgba(255,190,110,.45);background:rgba(10,10,12,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:460px;align-self:center}
+.resqr img{width:118px;height:118px;border-radius:8px;background:#fff;padding:4px;flex:none}
+.resqr p{margin:0;font-size:14px;line-height:1.5;color:rgba(255,255,255,.85);text-align:left}
+.resqr b{display:block;font-size:17px;color:#ffd9a0;margin-bottom:2px}
+/* /r : the visitor's own slip on their phone */
+.rview{min-height:100dvh;margin:0;padding:20px 16px 32px;display:flex;flex-direction:column;align-items:center;gap:14px;background:radial-gradient(120% 70% at 50% 0%,#3a1208 0%,#0b0706 60%,#000 100%);color:#fff;font-family:"M PLUS 1",sans-serif}
+.rhead{width:100%;max-width:460px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rtitle{margin:4px 0 0;font:800 22px/1.2 "Shippori Mincho B1",serif;letter-spacing:.2em}
+.rslip{width:100%;max-width:460px}
+.rslip .slip{width:100%}
+.rnote,.rempty{margin:0;max-width:460px;text-align:center;font-size:14px;color:rgba(255,255,255,.75)}
+@media print{.resqr{display:none}}

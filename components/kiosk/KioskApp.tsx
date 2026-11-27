@@ -30,6 +30,7 @@ import { FORTUNE_EN, tr, type Lang } from "@/lib/i18n";
 import { LangProvider, LangToggle } from "@/lib/useLang";
 import { Scatter } from "../Scatter";
 import { TitleVideo } from "../TitleVideo";
+import { ResultQr } from "../ResultQr";
 
 type Screen = "idle" | "about" | "ai" | "pick" | "reveal" | "result";
 
@@ -504,6 +505,7 @@ export function KioskApp() {
                 {t("終わる")}
               </button>
             </div>
+            <ResultQr slip={slip} />
             <a className="linkbtn homelink" href="/" onClick={() => sfx.tap()}>
               <span aria-hidden>⌂</span> <b>{t("ホームへ戻る")}</b>
             </a>

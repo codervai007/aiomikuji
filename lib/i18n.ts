@@ -77,6 +77,8 @@ const EN: Record<string, string> = {
   "裏（AIミニ解説）を見る": "See the back (AI tips)",
   終わる: "Finish",
   ホームへ戻る: "Back to home",
+  スマホで結果を見る: "See it on your phone",
+  "QRコードを読み取ると、このおみくじをスマホで見られます。": "Scan the QR code to open this fortune on your phone.",
   // slip
   AIおみくじ: "AI Omikuji",
   運勢: "Fortune",
