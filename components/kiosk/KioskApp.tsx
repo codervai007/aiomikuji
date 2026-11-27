@@ -489,7 +489,7 @@ export function KioskApp() {
             {en && <p className="resen">{FORTUNE_EN[slip.fortune]?.name}</p>}
             {slip.win ? (
               <div className="reswin">
-                <b>{t("マグカップ当選！")}</b>
+                <TitleVideo key={"win" + slip.no} slug="win" label={t("マグカップ当選！")} fallback={<b>{t("マグカップ当選！")}</b>} />
                 {t("スタッフにお声がけください")}
               </div>
             ) : (

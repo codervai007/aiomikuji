@@ -1019,3 +1019,9 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 @media(prefers-reduced-motion:reduce){:root body .resside .reswin,:root body .resside .reswin b{animation:none}}
 @media print{:root body .slip .winbadge,:root body .resside .reswin b{filter:none;-webkit-text-fill-color:#000;color:#000!important;background:none!important}}
 :root body .resside .reswin{gap:14px}
+/* win title clip (transparent) inside the win block */
+:root body .resside .reswin .titlevid{width:min(100%,clamp(380px,40vw,640px));margin:-24px auto -30px}
+/* winner screen holds two clips: keep both a bit smaller so everything fits */
+:root body .resside:has(.reswin) > .titlevid{width:min(100%,clamp(340px,34vw,560px));margin-top:-10px;margin-bottom:-36px}
+:root body .resside .reswin .titlevid{width:min(100%,clamp(320px,30vw,500px));margin:-30px auto -40px}
+:root body .resside:has(.reswin) .reslabel{margin-bottom:0}
