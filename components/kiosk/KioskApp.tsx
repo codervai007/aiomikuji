@@ -476,7 +476,6 @@ export function KioskApp() {
           </div>
           <aside className="resside">
             <p className="reslabel">{t("あなたの運勢は")}</p>
-            <p className="resreading">{en ? FORTUNE_EN[slip.fortune]?.romaji : FORTUNE_INFO[slip.fortune]?.reading}</p>
             <TitleVideo
               key={slip.no + slip.fortune}
               slug={FORTUNE_INFO[slip.fortune]?.slug ?? "chukichi"}

@@ -1002,3 +1002,20 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .qrfox .qrface{position:absolute;left:50%;top:50%;width:36px;height:36px;transform:translate(-50%,-50%)}
 .qrfox .qrtail{position:absolute;right:-30px;bottom:-6px;width:36px;height:72px;transform:rotate(12deg);filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
 .resqr{overflow:visible!important;margin-top:30px!important}.qrfox .qrears{top:-2px}
+
+/* ---------- 3D gold lettering: マグカップ当選！ banner and 当たり！ badge ---------- */
+:root body .resside .reswin{background:none!important;border:0!important;box-shadow:none!important;padding:4px 0 8px!important;color:#fff;font-size:clamp(15px,1.6vw,19px);font-weight:700;text-align:center;display:grid;gap:6px;animation:win3d-pop .8s cubic-bezier(.2,1.5,.4,1) both}
+:root body .resside .reswin b{display:block;font:900 clamp(40px,4.6vw,66px)/1.05 "M PLUS 1",sans-serif!important;letter-spacing:.02em;
+  background:linear-gradient(180deg,#fffbe6 0%,#ffe27a 28%,#ffb52e 55%,#e2741a 78%,#ffd56a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 1px 0 #c25a10) drop-shadow(0 2px 0 #b04e0c) drop-shadow(0 3px 0 #9c420a) drop-shadow(0 4px 0 #873708) drop-shadow(0 5px 0 #722d06) drop-shadow(0 6px 0 #5c2304) drop-shadow(0 10px 14px rgba(0,0,0,.65)) drop-shadow(0 0 22px rgba(255,150,40,.45));
+  transform:perspective(600px) rotateX(14deg);animation:win3d-glow 2.4s ease-in-out infinite}
+@keyframes win3d-pop{from{opacity:0;transform:scale(.4) translateY(20px)}to{opacity:1;transform:none}}
+@keyframes win3d-glow{0%,100%{transform:perspective(600px) rotateX(14deg) translateY(0)}50%{transform:perspective(600px) rotateX(14deg) translateY(-4px)}}
+
+:root body .slip .winbadge{background:none!important;box-shadow:none!important;border:0!important;padding:0!important;top:-26px!important;left:-14px!important;transform:rotate(-10deg)!important;
+  font:900 34px/1 "M PLUS 1",sans-serif!important;letter-spacing:.02em;
+  background:linear-gradient(180deg,#fff4f0 0%,#ff9a86 30%,#ff3a2e 60%,#c4101c 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 1px 0 #8a0a14) drop-shadow(0 2px 0 #7a0812) drop-shadow(0 3px 0 #690610) drop-shadow(0 4px 0 #57040c) drop-shadow(0 7px 8px rgba(0,0,0,.7)) drop-shadow(0 0 12px rgba(255,210,90,.55))}
+@media(prefers-reduced-motion:reduce){:root body .resside .reswin,:root body .resside .reswin b{animation:none}}
+@media print{:root body .slip .winbadge,:root body .resside .reswin b{filter:none;-webkit-text-fill-color:#000;color:#000!important;background:none!important}}
+:root body .resside .reswin{gap:14px}

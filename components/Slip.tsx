@@ -60,15 +60,7 @@ export function useNo() {
 }
 
 export function FortuneName({ fortune }: { fortune: string }) {
-  const { lang } = useLang();
-  return (
-    <ruby>
-      {fortune}
-      <rp>（</rp>
-      <rt>{lang === "en" ? FORTUNE_EN[fortune]?.romaji : FORTUNE_INFO[fortune]?.reading}</rt>
-      <rp>）</rp>
-    </ruby>
-  );
+  return <>{fortune}</>;
 }
 
 export function SlipFront({ data }: { data: SlipData }) {
@@ -191,7 +183,6 @@ export function PrintSlip({ data, qr }: { data: SlipData | null; qr: string }) {
       <p className="p-title">
         {t("AIおみくじ")}　{no(data.no)}
       </p>
-      <p className="p-read">{en ? FORTUNE_EN[data.fortune]?.romaji : FORTUNE_INFO[data.fortune]?.reading}</p>
       <p className="p-luck">{data.fortune}</p>
       {en && <p className="p-read">{FORTUNE_EN[data.fortune]?.name}</p>}
       {linesOf(textFor(data, lang)).map((k) => (
