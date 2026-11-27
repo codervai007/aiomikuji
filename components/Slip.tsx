@@ -6,7 +6,22 @@ import { FortuneArt } from "./FortuneArt";
 import { FORTUNE_EN } from "@/lib/i18n";
 import { useLang } from "@/lib/useLang";
 
-export type SlipData = { fortune: string; text: FortuneText; prompt: string; win: boolean; no: number; tips: string[] };
+export type SlipData = {
+  fortune: string;
+  text: FortuneText;
+  /** The same fortune in each language, so switching 日本語/English after the draw changes the lines too. */
+  alt?: Partial<Record<"ja" | "en", FortuneText>>;
+  prompt: string;
+  /** The prompt in each language. */
+  altPrompt?: Partial<Record<"ja" | "en", string>>;
+  win: boolean;
+  no: number;
+  tips: string[];
+};
+
+/** The fortune lines in the language being shown. */
+export const textFor = (d: SlipData, lang: string): FortuneText => d.alt?.[lang as "ja" | "en"] ?? d.text;
+export const promptFor = (d: SlipData, lang: string): string => d.altPrompt?.[lang as "ja" | "en"] ?? d.prompt;
 
 export const GUIDE_URL = process.env.NEXT_PUBLIC_GUIDE_URL || "";
 
@@ -16,6 +31,12 @@ const ITEM_STYLE: Record<LineKey, { icon: string; en: string; color: string }> =
   ひとこと: { icon: "言", en: "M", color: "#f08a1c" },
   適職運: { icon: "適", en: "C", color: "#7b4fd6" },
 };
+
+/** The prompt cut to its first two lines (role + this visitor's details), plus the ask, for the slip's back. */
+export function shortPrompt(prompt: string, lang: string): string {
+  const head = prompt.split("\n").filter(Boolean).slice(0, 2).join("\n");
+  return head + (lang === "en" ? "\nWrite Work, Health and a Message, short and positive." : "\n仕事運・健康運・ひとことを、前向きな言葉で短く書いて。");
+}
 
 /** The lines to show: the three base lines, plus 適職運 when present. */
 const linesOf = (t: FortuneText): LineKey[] => (t[MATCH_KEY] ? [...KEYS, MATCH_KEY] : [...KEYS]);
@@ -70,14 +91,14 @@ export function SlipFront({ data }: { data: SlipData }) {
         </div>
       </div>
       <ul className="items">
-        {linesOf(data.text).map((k) => (
+        {linesOf(textFor(data, lang)).map((k) => (
           <li key={k}>
             <span className="ic" style={{ background: ITEM_STYLE[k].color }}>
               {lang === "en" ? ITEM_STYLE[k].en : ITEM_STYLE[k].icon}
             </span>
             <div>
               <span className="lbl">{t(k)}</span>
-              <p>{data.text[k]}</p>
+              <p>{textFor(data, lang)[k]}</p>
             </div>
           </li>
         ))}
@@ -99,15 +120,36 @@ export function SlipFront({ data }: { data: SlipData }) {
 }
 
 export function SlipBack({ data, qr }: { data: SlipData; qr: string }) {
-  const { t } = useLang();
+  const { lang, t } = useLang();
   return (
     <article className="slip back" aria-label="おみくじ 裏面">
       <div className="sliphd">
         <span className="tag">{t("裏面")}</span>
         <span className="tag">{t("AIミニ解説")}</span>
       </div>
-      <h4>{t("AIにはこんな指示文を渡します")}</h4>
-      <pre>{data.prompt}</pre>
+      <h4>{t("AIのしくみ")}</h4>
+      <div className="how">
+        <p className="howlbl">
+          <span>1</span>
+          {t("AIへの指示文（プロンプト）")}
+        </p>
+        <pre>{shortPrompt(promptFor(data, lang), lang)}</pre>
+        <p className="howarrow" aria-hidden="true">
+          ↓
+        </p>
+        <p className="howlbl">
+          <span>2</span>
+          {t("あなたのおみくじ")}
+        </p>
+        <ul className="howout">
+          {linesOf(textFor(data, lang)).map((k) => (
+            <li key={k}>
+              <b>{t(k)}</b>
+              {textFor(data, lang)[k]}
+            </li>
+          ))}
+        </ul>
+      </div>
       <h4>{t("AIを仕事で使うコツ")}</h4>
       <ul className="tiplist">
         {data.tips.map((tip) => (
@@ -152,16 +194,16 @@ export function PrintSlip({ data, qr }: { data: SlipData | null; qr: string }) {
       <p className="p-read">{en ? FORTUNE_EN[data.fortune]?.romaji : FORTUNE_INFO[data.fortune]?.reading}</p>
       <p className="p-luck">{data.fortune}</p>
       {en && <p className="p-read">{FORTUNE_EN[data.fortune]?.name}</p>}
-      {linesOf(data.text).map((k) => (
+      {linesOf(textFor(data, lang)).map((k) => (
         <p key={k} className="p-item">
           <b>【{t(k)}】</b>
-          {data.text[k]}
+          {textFor(data, lang)[k]}
         </p>
       ))}
       {data.win && <p className="p-win">{en ? "★ WIN ★ You won a mug! Show this slip to a staff member" : "★ 当たり ★ マグカップ当選！この紙をスタッフにお見せください"}</p>}
       <hr />
-      <p className="p-h">{t("AIにはこんな指示文を渡します")}</p>
-      <pre className="p-pre">{data.prompt}</pre>
+      <p className="p-h">{t("AIのしくみ")}：{t("AIへの指示文（プロンプト）")}</p>
+      <pre className="p-pre">{shortPrompt(promptFor(data, lang), lang)}</pre>
       <p className="p-h">{t("AIを仕事で使うコツ")}</p>
       {data.tips.map((tip) => (
         <p key={tip} className="p-item">

@@ -238,7 +238,11 @@ export function KioskApp() {
       setStep(4, "done", "印刷");
     }
     pushMon({ phase: "done" });
-    setSlip({ fortune, text: parsed, prompt, win, no, tips: chooseTips(st.tips, st.tipMode) });
+    // Also prepare the fortune in the other language, so the 日本語/English switch works after the draw.
+    const other = lang === "en" ? "ja" : "en";
+    const alt = { [lang]: parsed, [other]: parseFortune(templateText(dept, match, other), other) };
+    const altPrompt = { [lang]: prompt, [other]: buildPrompt({ ...input, lang: other }) };
+    setSlip({ fortune, text: parsed, alt, prompt, altPrompt, win, no, tips: chooseTips(st.tips, st.tipMode) });
   };
 
   const mugsLeft = Math.max(0, st.mugs - st.won);

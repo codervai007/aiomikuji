@@ -970,3 +970,12 @@ code{background:var(--cream);border:1px solid var(--ink);border-radius:4px;paddi
 .tc-back{transform:none!important}
 .tc-face{backface-visibility:visible;-webkit-backface-visibility:visible}
 @media(max-width:900px){.kiosk .resslip,.kiosk .resslip .tc,.kiosk .resslip .tc-inner,.kiosk .resslip .slip{max-height:none!important;height:auto!important}}
+
+/* back of slip: prompt -> your fortune */
+.back .how{margin:0 0 18px;display:grid;gap:6px}
+.back .howlbl{margin:0;display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:#ffd9a0}
+.back .howlbl span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ffd76a,#ff7a45);color:#1a0a00;font-size:13px}
+:root body .back .how pre{margin:0!important}
+.back .howarrow{margin:0;text-align:center;font-size:20px;line-height:1;color:#ff9a4a}
+.back .howout{margin:0;padding:10px 12px;list-style:none;display:grid;gap:6px;border-radius:14px;border:1px solid rgba(255,170,90,.45);background:rgba(255,140,60,.08);font-size:14px;line-height:1.5}
+.back .howout b{display:block;font-size:12px;color:rgba(255,226,200,.75)}

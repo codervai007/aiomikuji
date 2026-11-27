@@ -140,9 +140,10 @@ const MATCH_TEMPLATES_EN = ["Your experience in {d} will shine in {m} too.", "Th
 
 export function templateText(dept = "", match = "", lang: Lang = "ja"): string {
   if (lang === "en") {
-    const lines = KEYS.map((k) => `${EN_KEYS[k]}: ${TEMPLATES_EN[k][Math.floor(rnd() * TEMPLATES_EN[k].length)]}`);
+    const en = POOL.en as Record<string, string[]>;
+    const lines = KEYS.map((k) => `${EN_KEYS[k]}: ${pickFresh("en-" + k, en[k]?.length ? en[k] : TEMPLATES_EN[k])}`);
     if (dept && match)
-      lines.push(`Career: ${MATCH_TEMPLATES_EN[Math.floor(rnd() * MATCH_TEMPLATES_EN.length)].replace("{d}", tr("en", dept)).replace("{m}", tr("en", match))}`);
+      lines.push(`Career: ${pickFresh("en-" + MATCH_KEY, POOL.matchEn).replace("{d}", tr("en", dept)).replace("{m}", tr("en", match))}`);
     return lines.join("\n");
   }
   const pool = POOL.lines as Record<string, string[]>;
