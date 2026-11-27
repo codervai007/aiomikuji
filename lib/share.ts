@@ -58,15 +58,32 @@ const fromB64Url = (s: string) => {
   return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
 };
 
+// Compact form: [fortune, number, win, ja lines, en lines]; each lines array follows LINE_KEYS.
+const FORTUNE_CODES = ["大大吉", "大吉", "中吉"];
+const LINE_KEYS = ["仕事運", "健康運", "ひとこと", MATCH_KEY];
+type Cell = number | number[] | string | 0;
+const toCells = (c: Compact | undefined): Cell[] | 0 => (c ? LINE_KEYS.map((k) => (c[k] ?? 0) as Cell) : 0);
+const fromCells = (a: Cell[] | 0): Compact | undefined => {
+  if (!a) return undefined;
+  const c: Compact = {};
+  LINE_KEYS.forEach((k, i) => {
+    if (a[i] !== 0 && a[i] !== undefined) c[k] = a[i] as number | number[] | string;
+  });
+  return c;
+};
+
 export function encodeResult(r: SharedResult): string {
-  return toB64Url(JSON.stringify({ ...r, ja: pack(r.ja, "ja"), en: pack(r.en, "en") }));
+  const f = FORTUNE_CODES.indexOf(r.f);
+  return toB64Url(JSON.stringify([f >= 0 ? f : r.f, r.n, r.w ? 1 : 0, toCells(pack(r.ja, "ja")), toCells(pack(r.en, "en"))]));
 }
 
 export function decodeResult(hash: string): SharedResult | null {
   try {
-    const raw = JSON.parse(fromB64Url(hash.replace(/^#/, "")));
-    if (typeof raw.f !== "string" || typeof raw.n !== "number") return null;
-    return { ...raw, ja: unpack(raw.ja, "ja"), en: unpack(raw.en, "en") } as SharedResult;
+    const a = JSON.parse(fromB64Url(hash.replace(/^#/, "")));
+    if (!Array.isArray(a) || typeof a[1] !== "number") return null;
+    const f = typeof a[0] === "number" ? FORTUNE_CODES[a[0]] : a[0];
+    if (typeof f !== "string") return null;
+    return { f, n: a[1], w: a[2] === 1, ja: unpack(fromCells(a[3]), "ja"), en: unpack(fromCells(a[4]), "en") };
   } catch {
     return null;
   }
