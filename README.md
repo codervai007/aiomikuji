@@ -99,3 +99,27 @@ npm run dev                  # http://localhost:3000
 - 端末を複数台にする場合は、当たりの数を共有の保存先（例：Vercel KV / Upstash）で管理する
 - サーマルプリンターへの印刷は、ブース端末側の小さなアプリで行う
 - 公開URLにする場合は、アクセス制限（Vercel の Password Protection など）を検討する
+
+
+## Run on the booth PC (local, not public)
+
+The booth can run entirely on its own PC at `http://localhost:3000`. Nothing is published, and visitors' answers stay on that PC.
+
+**One-time setup (needs internet)**
+1. Install **Node.js LTS** from https://nodejs.org and **Git** from https://git-scm.com (or download this repo as a ZIP from GitHub and unzip it).
+2. Open *Command Prompt* and run:
+   ```
+   git clone https://github.com/codervai007/aiomikuji.git
+   cd aiomikuji
+   npm install
+   npm run build
+   ```
+3. Optional: create a file `.env.local` in the folder with `STAFF_PIN=your-pin` to change the staff PIN (default 1234).
+
+**Every day:** double-click **start-booth.bat**. It starts the server and opens Chrome full-screen on `http://localhost:3000/omikuji` with printing and sound allowed. Close Chrome with Alt+F4, and the server window to stop.
+
+**After an update:** double-click **update-booth.bat** (needs internet), then start-booth.bat again.
+
+Other screens on the same PC: monitor `http://localhost:3000/monitor`, staff `http://localhost:3000/staff`.
+
+Notes: fonts load from Google Fonts when online; without internet, Windows' own Japanese fonts are used, so the text looks slightly different. Data saved at localhost is separate from the Vercel site.
